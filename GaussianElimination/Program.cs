@@ -10,6 +10,9 @@
         private static void Main(string[] args)
         {
             TestValue();
+            var xd = new MojaMacierz<Fraction>(10, 20);
+            xd.FillMatrixWithValue(new Value<Fraction>(new Fraction(1,2)));
+            var xd2 = MojaMacierz<Fraction>.FillWithRandom(10, 20);
             Console.ReadKey();
         }
 
