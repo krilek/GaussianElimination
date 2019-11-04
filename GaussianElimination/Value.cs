@@ -15,7 +15,7 @@ namespace GaussianElimination
     using System;
     using System.Collections.Generic;
 
-    public class Value<T> : IEquatable<Value<T>>
+    public class Value<T> : IEquatable<Value<T>> where T : new()
     {
         public T Val { get; set; }
 
@@ -48,7 +48,10 @@ namespace GaussianElimination
         {
             return !Equals(left, right);
         }
-
+        public Value()
+        {
+            Val = new T();
+        }
         public Value(T val)
         {
             Val = val;
@@ -69,6 +72,11 @@ namespace GaussianElimination
         public static Value<T> operator /(Value<T> v1, Value<T> v2)
         {
             return new Value<T>((dynamic)v1.Val / (dynamic)v2.Val);
+        }
+
+        public override string ToString()
+        {
+            return Val.ToString();
         }
     }
 }

@@ -13,8 +13,9 @@
 namespace GaussianElimination
 {
     using System;
+    using System.Collections.Generic;
 
-    public class MojaMacierz<T>
+    public class MojaMacierz<T> : IEquatable<MojaMacierz<T>> where T : new()
     {
         public int Width { get; }
 
@@ -90,6 +91,46 @@ namespace GaussianElimination
             }
 
             return matrix;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as MojaMacierz<T>);
+        }
+
+        public bool Equals(MojaMacierz<T> other)
+        {
+            return other != null &&
+                   Width == other.Width &&
+                   Height == other.Height &&
+                   EqualityComparer<Value<T>[,]>.Default.Equals(Matrix, other.Matrix);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Width, Height, Matrix);
+        }
+
+        public static bool operator ==(MojaMacierz<T> left, MojaMacierz<T> right)
+        {
+            return EqualityComparer<MojaMacierz<T>>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(MojaMacierz<T> left, MojaMacierz<T> right)
+        {
+            return !(left == right);
+        }
+
+        public Value<T> this[int i, int j]
+        {
+            get
+            {
+                return Matrix[i, j];
+            }
+            set
+            {
+                Matrix[i, j] = value;
+            }
         }
     }
 }

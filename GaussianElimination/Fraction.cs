@@ -19,25 +19,35 @@ namespace GaussianElimination
 
     public class Fraction : IEquatable<Fraction>
     {
-        public static Fraction Zero = new Fraction(0, 0);
-
+        public static Fraction Zero = new Fraction(0, 1);
+        public Fraction() : this(0, 1) { }
         public Fraction(BigInteger nominator, BigInteger denominator)
         {
+            if (denominator == BigInteger.Zero)
+            {
+                throw new ArgumentOutOfRangeException(nameof(denominator));
+            }
             this.Nominator = nominator;
             this.Denominator = denominator;
+            this.Reduce();
         }
+        public Fraction Reduce()
+        {
+            var gcd = BigInteger.GreatestCommonDivisor(Nominator, Denominator);
+            this.Nominator /= gcd;
+            this.Denominator /= gcd;
+            return this;
+        }
+        public BigInteger Denominator { get; private set; }
 
-        public BigInteger Denominator { get; }
-
-        public BigInteger Nominator { get; }
+        public BigInteger Nominator { get; private set; }
 
         public static Fraction operator +(Fraction v1, Fraction v2)
         {
             var n = v1.Nominator * v2.Denominator + v2.Nominator * v1.Denominator;
             if (n == BigInteger.Zero) return Zero;
             var d = v1.Denominator * v2.Denominator;
-            var gcd = BigInteger.GreatestCommonDivisor(n, d);
-            return new Fraction(n / gcd, d / gcd);
+            return new Fraction(n, d).Reduce(); 
         }
 
         public static Fraction operator /(Fraction v1, Fraction v2)
@@ -45,8 +55,7 @@ namespace GaussianElimination
             var n = v1.Nominator * v2.Denominator;
             if (n == BigInteger.Zero) return Zero;
             var d = v1.Denominator * v2.Nominator;
-            var gcd = BigInteger.GreatestCommonDivisor(n, d);
-            return new Fraction(n / gcd, d / gcd);
+            return new Fraction(n, d).Reduce();
         }
 
         public static bool operator ==(Fraction left, Fraction right)
@@ -64,8 +73,7 @@ namespace GaussianElimination
             var n = v1.Nominator * v2.Nominator;
             if (n == BigInteger.Zero) return Zero;
             var d = v1.Denominator * v2.Denominator;
-            var gcd = BigInteger.GreatestCommonDivisor(n, d);
-            return new Fraction(n / gcd, d / gcd);
+            return new Fraction(n, d).Reduce();
         }
 
         public static Fraction operator -(Fraction v1, Fraction v2)
@@ -73,8 +81,7 @@ namespace GaussianElimination
             var n = v1.Nominator * v2.Denominator - v2.Nominator * v1.Denominator;
             if (n == BigInteger.Zero) return Zero;
             var d = v1.Denominator * v2.Denominator;
-            var gcd = BigInteger.GreatestCommonDivisor(n, d);
-            return new Fraction(n / gcd, d / gcd);
+            return new Fraction(n, d).Reduce();
         }
 
         public bool Equals(Fraction other)
