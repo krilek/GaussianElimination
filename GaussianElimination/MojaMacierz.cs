@@ -28,7 +28,12 @@ namespace GaussianElimination
             this.Height = height;
             this.Matrix = new Value<T>[this.Height, this.Width];
         }
-
+        public MojaMacierz(Value<T>[,] values)
+        {
+            this.Width = values.GetLength(1);
+            this.Height = values.GetLength(0);
+            this.Matrix = values;
+        }
         public void FillMatrixWithValue(Value<T> value)
         {
             for (int i = 0; i < this.Height; i++)
@@ -44,7 +49,7 @@ namespace GaussianElimination
         {
             const int Min = -1 << 16;
             const int Max = (1 << 16) - 1;
-            var matrix = new MojaMacierz<Fraction>(width,height);
+            var matrix = new MojaMacierz<Fraction>(width, height);
             for (int i = 0; i < matrix.Height; i++)
             {
                 for (int j = 0; j < matrix.Width; j++)
@@ -100,10 +105,21 @@ namespace GaussianElimination
 
         public bool Equals(MojaMacierz<T> other)
         {
-            return other != null &&
+            var flag = other != null &&
                    Width == other.Width &&
-                   Height == other.Height &&
-                   EqualityComparer<Value<T>[,]>.Default.Equals(Matrix, other.Matrix);
+                   Height == other.Height;
+            for (int i = 0; i < Height; i++)
+            {
+                for (int j = 0; j < Width; j++)
+                {
+                    if (!flag)
+                    {
+                        return false;
+                    }
+                    flag = this[i, j] == other[i, j];
+                }
+            }
+            return flag;
         }
 
         public override int GetHashCode()

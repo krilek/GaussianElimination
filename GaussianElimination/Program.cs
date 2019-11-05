@@ -10,7 +10,8 @@
         private static void Main(string[] args)
         {
             TestValue();
-            //TestGaussSolver();
+            TestGaussSolver();
+            TestMojaMacierz();
             //var xd = new MojaMacierz<Fraction>(10, 20);
             //xd.FillMatrixWithValue(new Value<Fraction>());
             //var xd2 = MojaMacierz<Fraction>.FillWithRandomFractions(10, 20);
@@ -18,27 +19,35 @@
             //var xd4 = LinearSolver.Gauss<Fraction>(xd2, xd3);
             Console.ReadKey();
         }
+        private static void TestMojaMacierz()
+        {
+            var vector = new MojaMacierz<double>(new Value<double>[,] {
+                                                { new Value<double>(3.0)},
+                                                { new Value<double>(15.0)},
+                                                { new Value<double>(14.0)} });
+            if (vector.Height == 3 && vector.Width == 1)
+            {
+                Console.WriteLine("MojaMacierz test: PASS");
+            }
+        }
         private static void TestGaussSolver()
         {
-            var vector = new MojaMacierz<double>(1, 3);
-            var matrix = new MojaMacierz<double>(3, 3);
-            matrix.Matrix = new Value<double>[,] {
-                                { new Value<double>(3.0), new Value<double>(2.0), new Value<double>(-4.0) },
-                                { new Value<double>(2.0), new Value<double>(3.0), new Value<double>(3.0) },
-                                { new Value<double>(5.0), new Value<double>(-3.0), new Value<double>(1.0) }
-                            };
-            vector.Matrix = new Value<double>[,] {
+            var vector = new MojaMacierz<double>(new Value<double>[,] {
                                 { new Value<double>(3.0)},
                                 { new Value<double>(15.0)},
                                 { new Value<double>(14.0)}
-                            };
-            var solved = LinearSolver.Gauss<double>(matrix, vector);
-            var expected_result = new MojaMacierz<double>(1, 3);
-            expected_result.Matrix = new Value<double>[,] {
+                            });
+            var matrix = new MojaMacierz<double>(new Value<double>[,] {
+                                { new Value<double>(3.0), new Value<double>(2.0), new Value<double>(-4.0) },
+                                { new Value<double>(2.0), new Value<double>(3.0), new Value<double>(3.0) },
+                                { new Value<double>(5.0), new Value<double>(-3.0), new Value<double>(1.0) }
+                            });
+            var solved = LinearSolver.Gauss(matrix, vector);
+            var expected_result = new MojaMacierz<double>(new Value<double>[,] {
                                 { new Value<double>(3.0)},
                                 { new Value<double>(1.0)},
                                 { new Value<double>(2.0)}
-                            };
+                            });
             if (solved == expected_result) //TODO: Fix me!
             {
                 Console.WriteLine("PASS");

@@ -17,13 +17,32 @@ namespace GaussianElimination
 
     public class Value<T> : IEquatable<Value<T>> where T : new()
     {
+        const int equalityParameter = 5;
         public T Val { get; set; }
 
         public bool Equals(Value<T> other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return EqualityComparer<T>.Default.Equals(this.Val, other.Val);
+            if (typeof(T).IsPrimitive)
+            {
+                try
+                {
+                    return EqualityComparer<T>.Default.Equals(Math.Round((dynamic)this.Val, equalityParameter), Math.Round((dynamic)other.Val, equalityParameter)); // FIXME: Throws exception
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    Console.WriteLine(typeof(T));
+                    Console.WriteLine(other.Val);
+                    Console.WriteLine(this.Val);
+                }
+                return false;
+            }
+            else
+            {
+                return EqualityComparer<T>.Default.Equals(this.Val, other.Val);
+            }
         }
 
         public override bool Equals(object obj)
