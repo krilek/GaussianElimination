@@ -17,9 +17,9 @@ namespace GaussianElimination
     using System;
     using System.Numerics;
 
-    public class Fraction : IValue<Fraction>
+    public sealed class Fraction : Value<Fraction>
     {
-        public IValue<Fraction> Add(IValue<Fraction> v2)
+        protected override Value<Fraction> Add(Value<Fraction> v2)
         {
             var n = this.Nominator * ((Fraction)v2).Denominator + ((Fraction)v2).Nominator * this.Denominator;
             if (n == BigInteger.Zero) return Zero;
@@ -46,78 +46,61 @@ namespace GaussianElimination
             this.Denominator /= gcd;
             return this;
         }
+
+        protected override Value<Fraction> Subtract(Value<Fraction> v2)
+        {
+            var n = this.Nominator * ((Fraction)v2).Denominator - ((Fraction)v2).Nominator * this.Denominator;
+            if (n == BigInteger.Zero) return Zero;
+            var d = this.Denominator * ((Fraction)v2).Denominator;
+            return new Fraction(n, d).Reduce();
+        }
+
+        protected override Value<Fraction> Divide(Value<Fraction> v2)
+        {
+            var n = this.Nominator * ((Fraction)v2).Denominator;
+            if (n == BigInteger.Zero) return Zero;
+            var d = this.Denominator * ((Fraction)v2).Nominator;
+            return new Fraction(n, d).Reduce();
+        }
+
+        protected override Value<Fraction> Multiply(Value<Fraction> v2)
+        {
+            var n = this.Nominator * ((Fraction)v2).Nominator;
+            if (n == BigInteger.Zero) return Zero;
+            var d = this.Denominator * ((Fraction)v2).Denominator;
+            return new Fraction(n, d).Reduce();
+        }
+
         public BigInteger Denominator { get; private set; }
 
         public BigInteger Nominator { get; private set; }
 
-        //public static Fraction operator +(Fraction v1, Fraction v2)
-        //{
-        //    var n = v1.Nominator * v2.Denominator + v2.Nominator * v1.Denominator;
-        //    if (n == BigInteger.Zero) return Zero;
-        //    var d = v1.Denominator * v2.Denominator;
-        //    return new Fraction(n, d).Reduce(); 
-        //}
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return (this.Nominator.GetHashCode() * 397) ^ this.Denominator.GetHashCode();
+            }
+        }
 
-        //public static Fraction operator /(Fraction v1, Fraction v2)
-        //{
-        //    var n = v1.Nominator * v2.Denominator;
-        //    if (n == BigInteger.Zero) return Zero;
-        //    var d = v1.Denominator * v2.Nominator;
-        //    return new Fraction(n, d).Reduce();
-        //}
+        public override string ToString()
+        {
+            if (Nominator == Denominator) return "1";
+            if (Nominator == 0) return "0";
+            return $"{this.Nominator}/{this.Denominator}";
+        }
 
-        //public static bool operator ==(Fraction left, Fraction right)
-        //{
-        //    return Equals(left, right);
-        //}
+        protected override bool Equals(Value<Fraction> v2)
+        {
+            if (ReferenceEquals(null, v2)) return false;
+            if (ReferenceEquals(this, v2)) return true;
 
-        //public static bool operator !=(Fraction left, Fraction right)
-        //{
-        //    return !Equals(left, right);
-        //}
+            return this.Nominator.Equals(((Fraction)v2).Nominator) && this.Denominator.Equals(((Fraction)v2).Denominator);
+        }
 
-        //public static Fraction operator *(Fraction v1, Fraction v2)
-        //{
-        //    var n = v1.Nominator * v2.Nominator;
-        //    if (n == BigInteger.Zero) return Zero;
-        //    var d = v1.Denominator * v2.Denominator;
-        //    return new Fraction(n, d).Reduce();
-        //}
-
-        //public static Fraction operator -(Fraction v1, Fraction v2)
-        //{
-        //    var n = v1.Nominator * v2.Denominator - v2.Nominator * v1.Denominator;
-        //    if (n == BigInteger.Zero) return Zero;
-        //    var d = v1.Denominator * v2.Denominator;
-        //    return new Fraction(n, d).Reduce();
-        //}
-
-        //public bool Equals(Fraction other)
-        //{
-        //    if (ReferenceEquals(null, other)) return false;
-        //    if (ReferenceEquals(this, other)) return true;
-        //    return this.Nominator.Equals(other.Nominator) && this.Denominator.Equals(other.Denominator);
-        //}
-
-        //public override bool Equals(object obj)
-        //{
-        //    if (ReferenceEquals(null, obj)) return false;
-        //    if (ReferenceEquals(this, obj)) return true;
-        //    if (obj.GetType() != typeof(Fraction)) return false;
-        //    return this.Equals((Fraction)obj);
-        //}
-
-        //public override int GetHashCode()
-        //{
-        //    unchecked
-        //    {
-        //        return (this.Nominator.GetHashCode() * 397) ^ this.Denominator.GetHashCode();
-        //    }
-        //}
-
-        //public override string ToString()
-        //{
-        //    return $"{this.Nominator}/{this.Denominator}";
-        //}
+        public override Value<Fraction> Rand(int nominator)
+        {
+            return new Fraction(nominator, 1 << 16);
+        }
     }
 }

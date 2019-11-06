@@ -1,18 +1,32 @@
-﻿namespace GaussianElimination
+﻿#region copyright
+
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="Program.cs">
+// Karol Gzik 253923 University of Gdańsk Faculty of Mathematics, Physics and Informatics
+// krilek@gmail.com
+// </copyright>
+// <summary>
+// 
+// </summary>
+//  --------------------------------------------------------------------------------------------------------------------
+
+#endregion
+namespace GaussianElimination
 {
     using System;
     using System.Collections.Generic;
-    using System.Numerics;
 
     internal class Program
     {
         //https://stackoverflow.com/questions/32597581/best-way-to-exchange-matrix-rows?fbclid=IwAR2eKy_Uj0JNMRtRv9m450v1MLjTO-VUykX2JaKfWab_5q5muqeVc2qAJv4
         private static void Main(string[] args)
         {
-            IValue<Fraction> v = new Fraction(1, 2).Add(new Fraction(1, 2));
-            //TestValue();
-            //TestGaussSolver();
-            //TestMojaMacierz();
+            TestValue();
+            TestGaussSolver();
+            TestMojaMacierz();
+            //TestGaussSolverSquare2();
+            TestGaussSolverNotSquare2();
+            var x = MojaMacierz<Fraction>.GetRandomMatrix(100, 100);
             //var xd = new MojaMacierz<Fraction>(10, 20);
             //xd.FillMatrixWithValue(new Value<Fraction>());
             //var xd2 = MojaMacierz<Fraction>.FillWithRandomFractions(10, 20);
@@ -20,92 +34,137 @@
             //var xd4 = LinearSolver.Gauss<Fraction>(xd2, xd3);
             Console.ReadKey();
         }
-        //private static void TestMojaMacierz()
-        //{
-        //    var vector = new MojaMacierz<double>(new Value<double>[,] {
-        //                                        { new Value<double>(3.0)},
-        //                                        { new Value<double>(15.0)},
-        //                                        { new Value<double>(14.0)} });
-        //    if (vector.Height == 3 && vector.Width == 1)
-        //    {
-        //        Console.WriteLine("MojaMacierz test: PASS");
-        //    }
-        //}
-        //private static void TestGaussSolver()
-        //{
-        //    var vector = new MojaMacierz<double>(new Value<double>[,] {
-        //                        { new Value<double>(3.0)},
-        //                        { new Value<double>(15.0)},
-        //                        { new Value<double>(14.0)}
-        //                    });
-        //    var matrix = new MojaMacierz<double>(new Value<double>[,] {
-        //                        { new Value<double>(3.0), new Value<double>(2.0), new Value<double>(-4.0) },
-        //                        { new Value<double>(2.0), new Value<double>(3.0), new Value<double>(3.0) },
-        //                        { new Value<double>(5.0), new Value<double>(-3.0), new Value<double>(1.0) }
-        //                    });
-        //    var solved = LinearSolver.Gauss(matrix, vector);
-        //    var expected_result = new MojaMacierz<double>(new Value<double>[,] {
-        //                        { new Value<double>(3.0)},
-        //                        { new Value<double>(1.0)},
-        //                        { new Value<double>(2.0)}
-        //                    });
-        //    if (solved == expected_result) //TODO: Fix me!
-        //    {
-        //        Console.WriteLine("PASS");
-        //    }
-        //}
-        //private static void TestValue()
-        //{
-        //    var elements = new List<Func<bool>>
-        //                       {
-        //                           // Add tests
-        //                           () => new Value<Fraction>(new Fraction(1, 3))
-        //                                 + new Value<Fraction>(new Fraction(1, 3))
-        //                                 == new Value<Fraction>(new Fraction(2, 3)),
-        //                           () => new Value<double>(5.0) + new Value<double>(5.2)
-        //                                 == new Value<double>(5.2 + 5.0),
-        //                           () => new Value<BigInteger>(7) + new Value<BigInteger>(12)
-        //                                 == new Value<BigInteger>(7 + 12),
-        //                           () => new Value<Fraction>(new Fraction(-1, 3))
-        //                                 + new Value<Fraction>(new Fraction(1, 3))
-        //                                 == new Value<Fraction>(Fraction.Zero),
-        //                           () => new Value<double>(-5.0) + new Value<double>(5.2)
-        //                                 == new Value<double>(-5.0 + 5.2),
-        //                           () => new Value<BigInteger>(-7) + new Value<BigInteger>(12)
-        //                                 == new Value<BigInteger>(-7 + 12),
-        //                           () => new Value<Fraction>(new Fraction(1, 3))
-        //                                 + new Value<Fraction>(new Fraction(-1, 3))
-        //                                 == new Value<Fraction>(Fraction.Zero),
-        //                           () => new Value<double>(5.0) + new Value<double>(-5.2)
-        //                                 == new Value<double>(5.0 + -5.2),
-        //                           () => new Value<BigInteger>(7) + new Value<BigInteger>(-12)
-        //                                 == new Value<BigInteger>(7 + -12),
-        //                            // Zeros testing
-        //                           () => new Value<Fraction>() + new Value<Fraction>() 
-        //                                 == new Value<Fraction>(),
-        //                           () => new Value<double>() + new Value<double>()
-        //                                 == new Value<double>(),
-        //                           () => new Value<float>() + new Value<float>()
-        //                                 == new Value<float>(),
-        //                           // () => new Value<Fraction>(new Fraction(1,-3)) + new Value<Fraction>(new Fraction(1,-3)) == new Value<Fraction>(new Fraction(-2,3)),
-        //                           // () => new Value<Fraction>(new Fraction(-1,3)) + new Value<Fraction>(new Fraction(-1,3)) == new Value<Fraction>(new Fraction(-2,3))
-        //                       };
-        //    var i = 0;
-        //    var passed = true;
-        //    foreach (var element in elements)
-        //    {
-        //        if (!element())
-        //        {
-        //            Console.WriteLine($"Test {i} failed");
-        //            passed = false;
-        //        }
+        private static void TestMojaMacierz()
+        {
+            var vector = new MojaMacierz<MDouble>(new MDouble[,] {
+                                                { new MDouble(3.0)},
+                                                { new MDouble(15.0)},
+                                                { new MDouble(14.0)} });
+            if (vector.Height == 3 && vector.Width == 1)
+            {
+                Console.WriteLine("MojaMacierz test: PASS");
+            }
+        }
+        private static void TestGaussSolver()
+        {
+            var vector = new MojaMacierz<MDouble>(new MDouble[,] {
+                                { new MDouble(3.0)},
+                                { new MDouble(15.0)},
+                                { new MDouble(14.0)}
+                            });
+            var matrix = new MojaMacierz<MDouble>(new MDouble[,] {
+                                { new MDouble(3.0), new MDouble(2.0), new MDouble(-4.0) },
+                                { new MDouble(2.0), new MDouble(3.0), new MDouble(3.0) },
+                                { new MDouble(5.0), new MDouble(-3.0), new MDouble(1.0) }
+                            });
+            var solved = LinearSolver.Gauss(matrix, vector);
+            var expected_result = new MojaMacierz<MDouble>(new MDouble[,] {
+                                { new MDouble(3.0)},
+                                { new MDouble(1.0)},
+                                { new MDouble(2.0)}
+                            });
+            if (solved == expected_result) //TODO: Fix me!
+            {
+                Console.WriteLine("Gaussian solver test: PASS");
+            }
+        }
+        private static void TestGaussSolverSquare2()
+        {
+            for (int i = 1; i < 500; i++)
+            {
+                int seed = Guid.NewGuid().GetHashCode();
+                var vector = MojaMacierz<MDouble>.GetRandomMatrix(1, i, seed);
+                var matrix = MojaMacierz<MDouble>.GetRandomMatrix(i, i, seed);
+                try
+                {
+                    var solved = LinearSolver.Gauss(matrix, vector);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"Gaussian solver 2 test: FAIL. SIZE: {i}x{i}, SEED: {seed}, Exception: {e}");
+                }
+            }
+            Console.WriteLine("Gaussian solver 2 test: PASS");
 
-        //        i++;
-        //    }
+        }
+        private static void TestGaussSolverNotSquare2()
+        {
+            for (int i = 1; i < 250; i++)
+            {
+                for (int j = 2; j < 200; j++)
+                {
+                    int seed = Guid.NewGuid().GetHashCode();
+                    var vector = MojaMacierz<MDouble>.GetRandomMatrix(1, i, seed);
+                    var matrix = MojaMacierz<MDouble>.GetRandomMatrix(j, i, seed);
+                    try
+                    {
+                        var solved = LinearSolver.Gauss(matrix, vector);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(matrix);
+                        Console.WriteLine(vector);
+                        Console.WriteLine($"Gaussian solver 2 test: FAIL. SIZE: {j}x{i}, SEED: {seed}, Exception: {e}");
+                    }
+                }
 
-        //    if (!passed) throw new Exception("Some test failed.");
+            }
+            Console.WriteLine("Gaussian solver 2 test: PASS");
 
-        //    Console.WriteLine("Tests passed.");
-        //}
+        }
+        private static void TestValue()
+        {
+            //Value<Fraction> v = new Fraction(1, 2) + new Fraction(1, 2);
+            //Value<MDouble> md = new MDouble(0.5) + new MDouble(0.5);
+            //Value<MFloat> mf = new MFloat(0.5f) + new MFloat(0.5f);
+            var elements = new List<Func<bool>>
+                               {
+                                   // Add tests
+                                   () => new Fraction(1, 3) + new Fraction(1, 3) == new Fraction(2, 3),
+                                   () => new MDouble(5.0) + new MDouble(5.2)
+                                         == new MDouble(5.2 + 5.0),
+                                   () => new MFloat(7) + new MFloat(12)
+                                         == new MFloat(7 + 12),
+                                   () => new Fraction(-1, 3)
+                                         + new Fraction(1, 3)
+                                         == Fraction.Zero,
+                                   () => new MDouble(-5.0) + new MDouble(5.2)
+                                         == new MDouble(-5.0 + 5.2),
+                                   () => new MFloat(-7) + new MFloat(12)
+                                         == new MFloat(-7 + 12),
+                                   () => new Fraction(1, 3)
+                                         + new Fraction(-1, 3)
+                                         == Fraction.Zero,
+                                   () => new MDouble(5.0) + new MDouble(-5.2)
+                                         == new MDouble(5.0 + -5.2),
+                                   () => new MFloat(7) + new MFloat(-12)
+                                         == new MFloat(7 + -12),
+                                    // Zeros testing
+                                   () => new Fraction() + new Fraction()
+                                         == new Fraction(),
+                                   () => new MDouble() + new MDouble()
+                                         == new MDouble(),
+                                   () => new MFloat() + new MFloat()
+                                         == new MFloat(),
+                                   // () => new Value<Fraction>(new Fraction(1,-3)) + new Value<Fraction>(new Fraction(1,-3)) == new Value<Fraction>(new Fraction(-2,3)),
+                                   // () => new Value<Fraction>(new Fraction(-1,3)) + new Value<Fraction>(new Fraction(-1,3)) == new Value<Fraction>(new Fraction(-2,3))
+                               };
+            var i = 0;
+            var passed = true;
+            foreach (var element in elements)
+            {
+                if (!element())
+                {
+                    Console.WriteLine($"Test {i} failed");
+                    passed = false;
+                }
+
+                i++;
+            }
+
+            if (!passed) throw new Exception("Some test failed.");
+
+            Console.WriteLine("Value tests: PASS.");
+        }
     }
 }
