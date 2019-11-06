@@ -24,25 +24,12 @@ namespace GaussianElimination
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            if (typeof(T).IsPrimitive)
+            if (typeof(T) == typeof(double) || typeof(T) == typeof(float))
             {
-                try
-                {
-                    return EqualityComparer<T>.Default.Equals(Math.Round((dynamic)this.Val, equalityParameter), Math.Round((dynamic)other.Val, equalityParameter)); // FIXME: Throws exception
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                    Console.WriteLine(typeof(T));
-                    Console.WriteLine(other.Val);
-                    Console.WriteLine(this.Val);
-                }
-                return false;
+                return EqualityComparer<double>.Default.Equals(Math.Round((dynamic)this.Val, equalityParameter), Math.Round((dynamic)other.Val, equalityParameter));
             }
-            else
-            {
-                return EqualityComparer<T>.Default.Equals(this.Val, other.Val);
-            }
+
+            return EqualityComparer<T>.Default.Equals(this.Val, other.Val);
         }
 
         public override bool Equals(object obj)
