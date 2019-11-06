@@ -11,32 +11,50 @@
 //  --------------------------------------------------------------------------------------------------------------------
 
 #endregion
-using System;
 
 namespace GaussianElimination
 {
+    using System;
+
     public sealed class MDouble : Value<MDouble>
     {
-        const int equalityParameter = 5;
-        private double Value { get; set; }
+        private const int equalityParameter = 5;
+
+        public MDouble(double val)
+        {
+            this.Value = val;
+        }
+
+        public MDouble()
+            : this(0)
+        {
+        }
+
+        private double Value { get; }
+
+        public override Value<MDouble> Clone()
+        {
+            return new MDouble(this.Value);
+        }
+
+        public override Value<MDouble> Rand(int nominator)
+        {
+            return new MDouble(nominator / (double)(1 << 16));
+        }
+
+        public override string ToString()
+        {
+            return this.Value.ToString();
+        }
+
         protected override Value<MDouble> Add(Value<MDouble> v2)
         {
             return new MDouble(this.Value + ((MDouble)v2).Value);
         }
 
-        protected override Value<MDouble> Subtract(Value<MDouble> v2)
-        {
-            return new MDouble(this.Value - ((MDouble)v2).Value);
-        }
-
         protected override Value<MDouble> Divide(Value<MDouble> v2)
         {
             return new MDouble(this.Value / ((MDouble)v2).Value);
-        }
-
-        protected override Value<MDouble> Multiply(Value<MDouble> v2)
-        {
-            return new MDouble(this.Value * ((MDouble)v2).Value);
         }
 
         protected override bool Equals(Value<MDouble> v2)
@@ -46,20 +64,14 @@ namespace GaussianElimination
             return Math.Round(this.Value, equalityParameter) == Math.Round(((MDouble)v2).Value, equalityParameter);
         }
 
-        public override string ToString()
+        protected override Value<MDouble> Multiply(Value<MDouble> v2)
         {
-            return Value.ToString();
+            return new MDouble(this.Value * ((MDouble)v2).Value);
         }
 
-        public override Value<MDouble> Rand(int nominator)
+        protected override Value<MDouble> Subtract(Value<MDouble> v2)
         {
-            return new MDouble(nominator / (double)(1 << 16));
+            return new MDouble(this.Value - ((MDouble)v2).Value);
         }
-
-        public MDouble(double val)
-        {
-            Value = val;
-        }
-        public MDouble() : this(0) { }
     }
 }
