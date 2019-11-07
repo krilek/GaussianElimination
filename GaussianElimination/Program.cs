@@ -22,26 +22,25 @@ namespace GaussianElimination
         // https://stackoverflow.com/questions/32597581/best-way-to-exchange-matrix-rows?fbclid=IwAR2eKy_Uj0JNMRtRv9m450v1MLjTO-VUykX2JaKfWab_5q5muqeVc2qAJv4
         private static void Main(string[] args)
         {
-            TestValue();
-            TestGaussSolver();
-            TestMojaMacierz();
 
+            //TestValue();
+            //TestGaussSolver();
+            //TestMojaMacierz();
+            TestEqualityOfSolvers<Fraction>();
+            TestEqualityOfSolvers<MDouble>();
+            TestEqualityOfSolvers<MFloat>();
             // TestGaussSolverSquare2();
-            TestGaussSolverNotSquare2();
+            //TestGaussSolverNotSquare2<Fraction>();
 
-            // var xd = new MojaMacierz<Fraction>(10, 20);
-            // xd.FillMatrixWithValue(new Value<Fraction>());
-            // var xd2 = MojaMacierz<Fraction>.FillWithRandomFractions(10, 20);
-            // var xd3 = MojaMacierz<Fraction>.FillWithRandomFractions(1, 20);
             // var xd4 = LinearSolver.Gauss<Fraction>(xd2, xd3);
             Console.ReadKey();
         }
 
         private static void TestGaussSolver()
         {
-            var vector = new MojaMacierz<MDouble>(
+            var vector = new MyMatrix<MDouble>(
                 new[,] { { new MDouble(3.0) }, { new MDouble(15.0) }, { new MDouble(14.0) } });
-            var matrix = new MojaMacierz<MDouble>(
+            var matrix = new MyMatrix<MDouble>(
                 new[,]
                     {
                         {
@@ -55,22 +54,34 @@ namespace GaussianElimination
                         }
                     });
             var solved = LinearSolver.Gauss(matrix, vector);
-            var expected_result = new MojaMacierz<MDouble>(
+            var expected_result = new MyMatrix<MDouble>(
                 new[,] { { new MDouble(3.0) }, { new MDouble(1.0) }, { new MDouble(2.0) } });
             if (solved == expected_result) Console.WriteLine("Gaussian solver test: PASS");
         }
 
-        private static void TestGaussSolverNotSquare2()
+        private static void TestEqualityOfSolvers<T>()
+            where T : Value<T>, new()
+        {
+            var templateMatrix = MyMatrix<T>.GetRandomMatrix(5, 5);
+            var templateVector = MyMatrix<T>.GetRandomMatrix(1, 5);
+            var solved1 = templateMatrix.SolveLinearEquation(templateVector, LinearSolver.Gauss);
+            var solved2 = templateMatrix.SolveLinearEquation(templateVector, LinearSolver.PartialGauss);
+            Console.WriteLine(
+                solved1 == solved2
+                    ? $"Equality test of type {typeof(T).Name} solving methods: PASS"
+                    : $"Equality test of type {typeof(T).Name} solving methods: FAIL");
+        }
+        private static void TestGaussSolverNotSquare2<T>() where T : Value<T>, new()
         {
             for (var i = 2; i < 250; i++)
-            for (var j = 2; j < 200; j++)
+            for (var j = i; j < 200; j++)
             {
                 var seed = Guid.NewGuid().GetHashCode();
-                var vector = MojaMacierz<MDouble>.GetRandomMatrix(1, i, seed);
-                var matrix = MojaMacierz<MDouble>.GetRandomMatrix(j, i, seed);
+                var vector = MyMatrix<T>.GetRandomMatrix(1, i, seed);
+                var matrix = MyMatrix<T>.GetRandomMatrix(j, i, seed);
                 try
                 {
-                    var solved = LinearSolver.Gauss(matrix, vector);
+                    var solved = LinearSolver.Gauss<T>(matrix, vector);
                 }
                 catch (Exception e)
                 {
@@ -83,13 +94,13 @@ namespace GaussianElimination
             Console.WriteLine("Gaussian solver 2 test: PASS");
         }
 
-        private static void TestGaussSolverSquare2()
+        private static void TestGaussSolverSquare2<T>() where T : Value<T>, new()
         {
             for (var i = 1; i < 500; i++)
             {
                 var seed = Guid.NewGuid().GetHashCode();
-                var vector = MojaMacierz<MDouble>.GetRandomMatrix(1, i, seed);
-                var matrix = MojaMacierz<MDouble>.GetRandomMatrix(i, i, seed);
+                var vector = MyMatrix<T>.GetRandomMatrix(1, i, seed);
+                var matrix = MyMatrix<T>.GetRandomMatrix(i, i, seed);
                 try
                 {
                     var solved = LinearSolver.Gauss(matrix, vector);
@@ -105,18 +116,21 @@ namespace GaussianElimination
 
         private static void TestMojaMacierz()
         {
-            var vector = new MojaMacierz<MDouble>(
-                new[,] { { new MDouble(3.0) }, { new MDouble(15.0) }, { new MDouble(14.0) } });
+            var vector = new MyMatrix<MDouble>(
+                new Value<MDouble>[,] { { new MDouble(3.0) }, { new MDouble(15.0) }, { new MDouble(14.0) } });
             var flag = vector.Height == 3 && vector.Width == 1;
 
-            var vector2 = new MojaMacierz<MDouble>(vector);
+            var vector2 = new MyMatrix<MDouble>(vector);
             flag &= vector == vector2;
             vector[0, 0] = new MDouble(6);
             flag &= vector != vector2;
             vector2[0, 0] = new MDouble(6);
             flag &= vector == vector2;
-
-            if (flag) Console.WriteLine("MojaMacierz test: PASS");
+            vector2.SwapRows(0,1);
+            flag &= vector != vector2;
+            vector2.SwapRows(0, 1);
+            flag &= vector2 == vector;
+            if (flag) Console.WriteLine("MyMatrix test: PASS");
         }
 
         private static void TestValue()
@@ -140,11 +154,19 @@ namespace GaussianElimination
                                    // Zeros testing
                                    () => new Fraction() + new Fraction() == new Fraction(),
                                    () => new MDouble() + new MDouble() == new MDouble(),
-                                   () => new MFloat() + new MFloat() == new MFloat()
+                                   () => new MFloat() + new MFloat() == new MFloat(),
+
+                                   // comparison tests
+                                   () => new Fraction(1,4) < new Fraction(2,4),//
+                                   () => new Fraction(3,4) > new Fraction(2,4),
+                                   () => new Fraction(1,2) < new Fraction(2,3),//
+                                   () => new Fraction(1,5) == new Fraction(5, 25),
+                                   () => new Fraction(1,2) > new Fraction(1,3),
+                                   
 
                                    // () => new Value<Fraction>(new Fraction(1,-3)) + new Value<Fraction>(new Fraction(1,-3)) == new Value<Fraction>(new Fraction(-2,3)),
-                                   // () => new Value<Fraction>(new Fraction(-1,3)) + new Value<Fraction>(new Fraction(-1,3)) == new Value<Fraction>(new Fraction(-2,3))
-                               };
+            // () => new Value<Fraction>(new Fraction(-1,3)) + new Value<Fraction>(new Fraction(-1,3)) == new Value<Fraction>(new Fraction(-2,3))
+        };
             var i = 0;
             var passed = true;
             foreach (var element in elements)

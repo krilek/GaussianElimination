@@ -73,5 +73,10 @@ namespace GaussianElimination
         {
             return new MDouble(this.Value - ((MDouble)v2).Value);
         }
+
+        protected override int Compare(Value<MDouble> v2)
+        {
+            return this.Value.CompareTo(((MDouble)v2).Value);
+        }
     }
 }

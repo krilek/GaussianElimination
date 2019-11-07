@@ -74,5 +74,10 @@ namespace GaussianElimination
         {
             return new MFloat(this.Value - ((MFloat)v2).Value);
         }
+
+        protected override int Compare(Value<MFloat> v2)
+        {
+            return this.Value.CompareTo(((MFloat)v2).Value);
+        }
     }
 }
