@@ -14,6 +14,8 @@
 
 namespace GaussianElimination
 {
+    using System.Linq;
+
     /// <summary>
     ///     The linear solver.
     /// </summary>
@@ -91,6 +93,60 @@ namespace GaussianElimination
             return RetrieveResult(m, v);
         }
 
+        public static MyMatrix<T> FullGauss<T>(MyMatrix<T> matrix, MyMatrix<T> vector) where T : Value<T>, new()
+        {
+            var m = new MyMatrix<T>(matrix);
+            var v = new MyMatrix<T>(vector);
+            int[] columnsLocations = Enumerable.Range(0, vector.Height).ToArray(); // Use vector height because matrix could we wider.
+            for (int i = 0; i < vector.Height; i++)
+            {
+                int rowToSwap = i;
+                int columnToSwap = i;
+
+                // Select best column and row to swap.
+                for (int j = i + 1; j < vector.Height; j++)
+                {
+                    for (int k = 0; k < matrix.Width; k++)
+                    {
+                        if (m[j, k] > m[rowToSwap, columnToSwap])
+                        {
+                            rowToSwap = j;
+                            columnToSwap = k;
+                        }
+                    }
+                }
+
+                if (rowToSwap != i || columnToSwap != i)
+                {
+                    // Swap information about columns for future reading result.
+                    columnsLocations.Swap(columnToSwap, i);
+
+                    // Swap rows and columns
+                    m.SwapRows(rowToSwap, i);
+                    m.SwapColumns(columnToSwap, i);
+                    v.SwapRows(rowToSwap, i);
+
+                    CreateStep(m, v, i);
+                }
+
+            }
+
+            // Retrieve result and sort it according to the columns locations
+            var result = RetrieveResult(m, v);
+
+            for (int i = 0; i < result.Height; i++)
+            {
+                result.SwapRows(i, columnsLocations[i]);
+            }
+
+            return result;
+        }
+        public static void Swap<T>(this T[] a, int i, int j)
+        {
+            T t = a[i];
+            a[i] = a[j];
+            a[j] = t;
+        }
         /// <summary>
         /// The create step.
         /// </summary>

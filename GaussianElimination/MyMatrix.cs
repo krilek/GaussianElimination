@@ -31,7 +31,7 @@ namespace GaussianElimination
         where T : Value<T>, new()
     {
         /// <summary>
-        /// The matrix.
+        ///     The matrix.
         /// </summary>
         private Value<T>[,] matrix;
 
@@ -72,17 +72,21 @@ namespace GaussianElimination
             : this(matrixToCopy.Width, matrixToCopy.Height)
         {
             for (var i = 0; i < this.Height; i++)
-            for (var j = 0; j < this.Width; j++)
-                this.Matrix[i, j] = matrixToCopy[i, j].Clone();
+            {
+                for (var j = 0; j < this.Width; j++)
+                {
+                    this.Matrix[i, j] = matrixToCopy[i, j].Clone();
+                }
+            }
         }
 
         /// <summary>
-        /// Gets the height.
+        ///     Gets the height.
         /// </summary>
         public int Height { get; private set; }
 
         /// <summary>
-        /// Gets or sets the matrix.
+        ///     Gets or sets the matrix.
         /// </summary>
         public Value<T>[,] Matrix
         {
@@ -96,7 +100,7 @@ namespace GaussianElimination
         }
 
         /// <summary>
-        /// Gets the width.
+        ///     Gets the width.
         /// </summary>
         public int Width { get; private set; }
 
@@ -141,20 +145,24 @@ namespace GaussianElimination
             var rnd = new Random(seed.Value);
             var matrix = new MyMatrix<T>(width, height);
             for (var i = 0; i < matrix.Height; i++)
-            for (var j = 0; j < matrix.Width; j++)
-                matrix.Matrix[i, j] = new T().Rand(rnd.Next(Min, Max));
+            {
+                for (var j = 0; j < matrix.Width; j++)
+                {
+                    matrix.Matrix[i, j] = new T().Rand(rnd.Next(Min, Max));
+                }
+            }
 
             return matrix;
         }
 
         /// <summary>
-        /// The ==.
+        ///     The ==.
         /// </summary>
         /// <param name="left">
-        /// The left.
+        ///     The left.
         /// </param>
         /// <param name="right">
-        /// The right.
+        ///     The right.
         /// </param>
         /// <returns>
         /// </returns>
@@ -164,13 +172,13 @@ namespace GaussianElimination
         }
 
         /// <summary>
-        /// The !=.
+        ///     The !=.
         /// </summary>
         /// <param name="left">
-        /// The left.
+        ///     The left.
         /// </param>
         /// <param name="right">
-        /// The right.
+        ///     The right.
         /// </param>
         /// <returns>
         /// </returns>
@@ -180,18 +188,19 @@ namespace GaussianElimination
         }
 
         /// <summary>
-        /// The *.
+        ///     The *.
         /// </summary>
         /// <param name="left">
-        /// The left.
+        ///     The left.
         /// </param>
         /// <param name="right">
-        /// The right.
+        ///     The right.
         /// </param>
         /// <returns>
         /// </returns>
         public static MyMatrix<T> operator *(MyMatrix<T> left, MyMatrix<T> right)
         {
+            return null;
         }
 
         /// <summary>
@@ -221,12 +230,18 @@ namespace GaussianElimination
         {
             var flag = other != null && this.Width == other.Width && this.Height == other.Height;
             for (var i = 0; i < this.Height; i++)
-            for (var j = 0; j < this.Width; j++)
             {
-                if (!flag) return false;
-                var a = this[i, j];
-                var b = other[i, j];
-                flag = a == b;
+                for (var j = 0; j < this.Width; j++)
+                {
+                    if (!flag)
+                    {
+                        return false;
+                    }
+
+                    var a = this[i, j];
+                    var b = other[i, j];
+                    flag = a == b;
+                }
             }
 
             return flag;
@@ -246,10 +261,10 @@ namespace GaussianElimination
         }
 
         /// <summary>
-        /// The get hash code.
+        ///     The get hash code.
         /// </summary>
         /// <returns>
-        /// The <see cref="int"/>.
+        ///     The <see cref="int" />.
         /// </returns>
         public override int GetHashCode()
         {
@@ -290,6 +305,25 @@ namespace GaussianElimination
         }
 
         /// <summary>
+        /// The swap columns.
+        /// </summary>
+        /// <param name="firstCol">
+        /// The first col.
+        /// </param>
+        /// <param name="secondCol">
+        /// The second col.
+        /// </param>
+        public void SwapColumns(int firstCol, int secondCol)
+        {
+            for (int y = 0; y < this.Height; y++)
+            {
+                var temp = this[y, firstCol];
+                this[y, firstCol] = this[y, secondCol];
+                this[y, secondCol] = temp;
+            }
+        }
+
+        /// <summary>
         /// The swap rows.
         /// </summary>
         /// <param name="firstRow">
@@ -309,17 +343,21 @@ namespace GaussianElimination
         }
 
         /// <summary>
-        /// The to string.
+        ///     The to string.
         /// </summary>
         /// <returns>
-        /// The <see cref="string"/>.
+        ///     The <see cref="string" />.
         /// </returns>
         public override string ToString()
         {
             var sb = new StringBuilder();
             for (var i = 0; i < this.Height; i++)
             {
-                for (var j = 0; j < this.Width; j++) sb.Append(this.Matrix[i, j]);
+                for (var j = 0; j < this.Width; j++)
+                {
+                    sb.Append($"{this.Matrix[i, j]} ");
+                }
+
                 sb.AppendLine();
             }
 

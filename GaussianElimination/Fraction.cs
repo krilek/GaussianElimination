@@ -171,18 +171,29 @@ namespace GaussianElimination
         /// </returns>
         protected override int Compare(Value<Fraction> v2)
         {
-            Fraction other = (Fraction)v2;
-            if (this.Nominator > other.Nominator && this.Denominator <= other.Nominator)
+            var l = (Fraction)this.Clone();
+            var r = (Fraction)v2.Clone();
+            this.SetCommonDenominator(l, r);
+            if (l.Nominator > r.Nominator)
             {
                 return 1;
             }
 
-            if (this.Nominator == other.Nominator && this.Denominator == other.Denominator)
+            if (l.Nominator == r.Nominator)
             {
                 return 0;
             }
 
             return -1;
+        }
+
+        private void SetCommonDenominator(Fraction l, Fraction r)
+        {
+            BigInteger tempDenominator = l.Denominator;
+            l.Denominator *= r.Denominator;
+            l.Nominator *= r.Denominator;
+            r.Denominator = l.Denominator;
+            r.Nominator *= tempDenominator;
         }
 
         /// <summary>
@@ -258,10 +269,11 @@ namespace GaussianElimination
         /// </returns>
         protected override Value<Fraction> Subtract(Value<Fraction> v2)
         {
+            // TODO: Fix, there is implementation in comparison
             var n = this.Nominator * ((Fraction)v2).Denominator - ((Fraction)v2).Nominator * this.Denominator;
             if (n == BigInteger.Zero) return Zero;
             var d = this.Denominator * ((Fraction)v2).Denominator;
-            return new Fraction(n, d).Reduce();
+            return new Fraction(n, d).MoveSignToNominator().Reduce();
         }
     }
 }
