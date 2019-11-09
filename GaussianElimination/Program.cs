@@ -39,9 +39,12 @@ namespace GaussianElimination
 
             TestGaussSolver();
             //TestMojaMacierz();
-            //TestEqualityOfSolvers<Fraction>();
-            //TestEqualityOfSolvers<MDouble>();
-            //TestEqualityOfSolvers<MFloat>();
+            //for (int i = 0; i < 100; i++)
+            //{
+            TestEqualityOfSolvers<Fraction>();
+            TestEqualityOfSolvers<MDouble>();
+            TestEqualityOfSolvers<MFloat>();
+            //}
 
             // TestGaussSolverSquare2();
             // TestGaussSolverNotSquare2<Fraction>();
@@ -63,11 +66,7 @@ namespace GaussianElimination
             var solved1 = templateMatrix.SolveLinearEquation(templateVector, LinearSolver.Gauss);
             var solved2 = templateMatrix.SolveLinearEquation(templateVector, LinearSolver.PartialGauss);
             var solved3 = templateMatrix.SolveLinearEquation(templateVector, LinearSolver.FullGauss);
-
-            Console.WriteLine(
-                solved1 == solved2 && solved1 == solved3
-                    ? $"Equality test of type {typeof(T).Name} solving methods: PASS"
-                    : $"Equality test of type {typeof(T).Name} solving methods: FAIL");
+            Console.WriteLine($"Equality test of type {typeof(T).Name} solving methods: {(solved1 == solved2 && solved1 == solved3 ? "PASS" : "FAIL")}");
         }
 
         /// <summary>

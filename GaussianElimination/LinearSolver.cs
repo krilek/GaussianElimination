@@ -1,4 +1,14 @@
-﻿#region copyright
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="LinearSolver.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   The linear solver.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+
+#region copyright
 
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="LinearSolver.cs">
@@ -14,13 +24,78 @@
 
 namespace GaussianElimination
 {
+    #region Usings
+
     using System.Linq;
+
+    #endregion
 
     /// <summary>
     ///     The linear solver.
     /// </summary>
     internal static class LinearSolver
     {
+        /// <summary>
+        /// The full gauss.
+        /// </summary>
+        /// <param name="matrix">
+        /// The matrix.
+        /// </param>
+        /// <param name="vector">
+        /// The vector.
+        /// </param>
+        /// <typeparam name="T">
+        /// </typeparam>
+        /// <returns>
+        /// The <see cref="MyMatrix"/>.
+        /// </returns>
+        public static MyMatrix<T> FullGauss<T>(MyMatrix<T> matrix, MyMatrix<T> vector)
+            where T : Value<T>, new()
+        {
+            var m = new MyMatrix<T>(matrix);
+            var v = new MyMatrix<T>(vector);
+            int[] columnsLocations = Enumerable.Range(0, vector.Height).ToArray();
+            for (int i = 0; i < vector.Height; i++)
+            {
+                int rowToSwap = i;
+                int columnToSwap = i;
+
+                // Select best column and row to swap.
+                for (int j = i + 1; j < vector.Height; j++)
+                {
+                    for (int k = i; k < matrix.Width; k++)
+                    {
+                        if (m[j, k] > m[rowToSwap, columnToSwap])
+                        {
+                            rowToSwap = j;
+                            columnToSwap = k;
+                        }
+                    }
+                }
+
+                if (rowToSwap != i || columnToSwap != i)
+                {
+                    // Swap information about columns for future reading result.
+                    columnsLocations.Swap(columnToSwap, i);
+
+                    // Swap rows and columns
+                    m.SwapRows(rowToSwap, i);
+                    m.SwapColumns(columnToSwap, i);
+                    v.SwapRows(rowToSwap, i);
+                }
+
+                CreateStep(m, v, i);
+            }
+
+            // Retrieve result and sort it according to the columns locations
+            var result = RetrieveResult(m, v);
+            var originalResult = new MyMatrix<T>(result);
+            for (int j = 0; j < v.Height; j++)
+                originalResult[columnsLocations[j], 0] = result[j, 0];
+
+            return originalResult;
+        }
+
         /// <summary>
         /// The gauss.
         /// </summary>
@@ -93,62 +168,29 @@ namespace GaussianElimination
             return RetrieveResult(m, v);
         }
 
-        public static MyMatrix<T> FullGauss<T>(MyMatrix<T> matrix, MyMatrix<T> vector) where T : Value<T>, new()
-        {
-            var m = new MyMatrix<T>(matrix);
-            var v = new MyMatrix<T>(vector);
-            int[] columnsLocations = Enumerable.Range(0, vector.Height).ToArray(); // Use vector height because matrix could we wider.
-            for (int i = 0; i < vector.Height; i++)
-            {
-                int rowToSwap = i;
-                int columnToSwap = i;
-
-                // Select best column and row to swap.
-                for (int j = i + 1; j < vector.Height; j++)
-                {
-                    for (int k = 0; k < matrix.Width; k++)
-                    {
-                        if (m[j, k] > m[rowToSwap, columnToSwap])
-                        {
-                            rowToSwap = j;
-                            columnToSwap = k;
-                        }
-                    }
-                }
-
-                if (rowToSwap != i || columnToSwap != i)
-                {
-                    // Swap information about columns for future reading result.
-                    columnsLocations.Swap(columnToSwap, i);
-
-                    // Swap rows and columns
-                    m.SwapRows(rowToSwap, i);
-                    m.SwapColumns(columnToSwap, i);
-                    v.SwapRows(rowToSwap, i);
-
-                    CreateStep(m, v, i);
-                }
-
-            }
-
-            // Retrieve result and sort it according to the columns locations
-            var result = RetrieveResult(m, v);
-
-            for (int i = 0; i < result.Height; i++)
-            {
-                result.SwapRows(i, columnsLocations[i]);
-            }
-
-            return result;
-        }
+        /// <summary>
+        /// Swaps element in array.
+        /// </summary>
+        /// <param name="a">
+        /// The a.
+        /// </param>
+        /// <param name="i">
+        /// The i.
+        /// </param>
+        /// <param name="j">
+        /// The j.
+        /// </param>
+        /// <typeparam name="T">
+        /// </typeparam>
         public static void Swap<T>(this T[] a, int i, int j)
         {
-            T t = a[i];
+            var t = a[i];
             a[i] = a[j];
             a[j] = t;
         }
+
         /// <summary>
-        /// The create step.
+        /// For given row create step with zeros on left.
         /// </summary>
         /// <param name="matrix">
         /// The matrix.
@@ -167,10 +209,10 @@ namespace GaussianElimination
             for (var i = row + 1; i < vector.Height; i++)
             {
                 var alpha = matrix[i, row] / matrix[row, row];
-                vector[i, 0] = vector[i, 0] - alpha * vector[row, 0];
+                vector[i, 0] = vector[i, 0] - (alpha * vector[row, 0]);
                 for (var j = row; j < vector.Height; j++)
                 {
-                    matrix[i, j] = matrix[i, j] - alpha * matrix[row, j];
+                    matrix[i, j] = matrix[i, j] - (alpha * matrix[row, j]);
                 }
             }
         }

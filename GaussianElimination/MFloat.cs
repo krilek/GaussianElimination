@@ -18,7 +18,7 @@ namespace GaussianElimination
 
     public sealed class MFloat : Value<MFloat>
     {
-        private const int equalityParameter = 5;
+        private const int equalityParameter = 3;
 
         public MFloat(float val)
         {
