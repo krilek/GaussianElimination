@@ -19,6 +19,8 @@ namespace GaussianElimination
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
+    using System.IO;
+    using System.Linq;
 
     #endregion
 
@@ -27,7 +29,6 @@ namespace GaussianElimination
     /// </summary>
     internal class Program
     {
-        // https://stackoverflow.com/questions/32597581/best-way-to-exchange-matrix-rows?fbclid=IwAR2eKy_Uj0JNMRtRv9m450v1MLjTO-VUykX2JaKfWab_5q5muqeVc2qAJv4
         /// <summary>
         /// The main.
         /// </summary>
@@ -36,13 +37,26 @@ namespace GaussianElimination
         /// </param>
         private static void Main(string[] args)
         {
-            TestValue();
-            TestMyMatrixMul();
-            Stopwatch timer = Stopwatch.StartNew();
-            TestCorrectnessOfGauss<Fraction>();
-            timer.Stop();
-            TimeSpan timespan = timer.Elapsed;
-            Console.WriteLine(String.Format("{0:00}:{1:00}:{2:00}", timespan.Minutes, timespan.Seconds, timespan.Milliseconds / 10));
+            //TestValue();
+            //TestMyMatrixMul();
+            var filename = $"{args[0]}_{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}.csv";
+            switch (args[0])
+            {
+                case "double":
+                    GenerateData<MDouble>(filename);
+                    break;
+                case "float":
+                    GenerateData<MFloat>(filename);
+                    break;
+                case "fraction":
+                    GenerateData<Fraction>(filename);
+                    break;
+                default:
+                    Console.WriteLine("Wrong argument.");
+                    break;
+            }
+
+            //Console.WriteLine(String.Format("{0:00}:{1:00}:{2:00}", timespan.Minutes, timespan.Seconds, timespan.Milliseconds / 10));
             //TestGaussSolver();
             //TestMyMatrix();
             //for (int i = 0; i < 100; i++)
@@ -56,8 +70,14 @@ namespace GaussianElimination
             // TestGaussSolverNotSquare2<Fraction>();
 
             // var xd4 = LinearSolver.Gauss<Fraction>(xd2, xd3);
-            Console.ReadKey();
+            //Console.ReadKey();
         }
+
+        static void StoreResults(string filePath, int size, long time, string error, string method)
+        {
+            File.AppendAllText(filePath, $"{size.ToString()};{time.ToString()};{error};{method};{Environment.NewLine}");
+        }
+
 
         /// <summary>
         /// The test equality of solvers.
@@ -158,21 +178,46 @@ namespace GaussianElimination
             Console.WriteLine("Gaussian solver 2 test: PASS");
         }
 
-        private static void TestCorrectnessOfGauss<T>()
+        private static void GenerateData<T>(string filename)
             where T : Value<T>, new()
         {
-            // Calculate B
-            var a = MyMatrix<T>.GetRandomMatrix(200, 200);
-            var x = MyMatrix<T>.GetRandomMatrix(1, 200);
-            var b = a * x;
-            var solved1 = a.SolveLinearEquation(b, LinearSolver.Gauss);
-            var solved2 = a.SolveLinearEquation(b, LinearSolver.PartialGauss);
-            var solved3 = a.SolveLinearEquation(b, LinearSolver.FullGauss);
-            Console.WriteLine($"Equality test of type {typeof(T).Name} solving methods: {(solved1 == solved2 && solved1 == solved3 ? "PASS" : "FAIL")}");
-            Console.WriteLine($"    Is {nameof(LinearSolver.Gauss)} correct? : {(solved1 == x ? "PASS" : "FAIL")}");
-            Console.WriteLine($"    Is {nameof(LinearSolver.PartialGauss)} correct? : {(solved2 == x ? "PASS" : "FAIL")}");
-            Console.WriteLine($"    Is {nameof(LinearSolver.FullGauss)} correct? : {(solved3 == x ? "PASS" : "FAIL")}");
-            Console.WriteLine();
+            Dictionary<int, int> incrementMap =
+                new Dictionary<int, int> { { 100, 25 }, { 300, 50 }, { 500, 100 }, { 1000, 250 } };
+            var solvingMethods = new List<(string, Func<MyMatrix<T>, MyMatrix<T>, MyMatrix<T>>)>
+                                     {
+                                         ("G", LinearSolver.Gauss), ("PG",LinearSolver.PartialGauss), ("FG", LinearSolver.FullGauss)
+                                     };
+            int size = 10;
+            int increment = 10;
+            do
+            {
+                // Calculate B
+                var a = MyMatrix<T>.GetRandomMatrix(size, size);
+                var x = MyMatrix<T>.GetRandomMatrix(1, size);
+                MyMatrix<T> b = a * x;
+                // Verify results
+                foreach ((string name, Func<MyMatrix<T>, MyMatrix<T>, MyMatrix<T>> solvingMethod) in solvingMethods)
+                {
+                    (long time, string error) = TestCorrectnessOfGauss<T>(a, x, b, solvingMethod);
+                    StoreResults(filename, size, time, error, name);
+                }
+
+                size += increment;
+                if (incrementMap.Keys.Contains(size))
+                {
+                    increment = incrementMap[size];
+                }
+            }
+            while (true);
+        }
+        private static (long time, string error) TestCorrectnessOfGauss<T>(MyMatrix<T> a, MyMatrix<T> x, MyMatrix<T> b, Func<MyMatrix<T>, MyMatrix<T>, MyMatrix<T>> solvingFunc)
+            where T : Value<T>, new()
+        {
+            Stopwatch timer = Stopwatch.StartNew();
+            MyMatrix<T> solved1 = a.SolveLinearEquation(b, solvingFunc);
+            timer.Stop();
+            Value<T> error = solved1.RelativeError(x);
+            return (timer.ElapsedMilliseconds, error.ToString());
         }
 
         private static void TestMyMatrixMul()

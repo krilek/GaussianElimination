@@ -48,7 +48,10 @@ namespace GaussianElimination
             int[] columnsLocations = Enumerable.Range(0, vector.Height).ToArray();
             for (int i = 0; i < vector.Height; i++)
             {
+#if DEBUG
                 Console.WriteLine($"Full GAUSS: ROW:{i}/{vector.Height}");
+
+#endif
                 int rowToSwap = i;
                 int columnToSwap = i;
 
@@ -110,7 +113,9 @@ namespace GaussianElimination
             var v = new MyMatrix<T>(vector);
             for (var row = 0; row < v.Height; row++)
             {
+#if DEBUG
                 Console.WriteLine($"GAUSS: ROW:{row}/{v.Height}");
+#endif
                 CreateStep(m, v, row);
             }
 
@@ -138,7 +143,9 @@ namespace GaussianElimination
             var v = new MyMatrix<T>(vector);
             for (int i = 0; i < vector.Height; i++)
             {
+#if DEBUG
                 Console.WriteLine($"Partial GAUSS: ROW:{i}/{vector.Height}");
+#endif
                 int rowToSwap = i;
                 for (int j = i + 1; j < vector.Height; j++)
                 {

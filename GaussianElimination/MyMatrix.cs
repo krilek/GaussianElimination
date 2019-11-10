@@ -18,6 +18,7 @@ namespace GaussianElimination
 
     using System;
     using System.Collections.Generic;
+    using System.Numerics;
     using System.Text;
 
     #endregion
@@ -204,6 +205,7 @@ namespace GaussianElimination
             {
                 throw new ArgumentException("When multiplying matrix A must have equal width with height of matrix B.");
             }
+
             var result = new MyMatrix<T>(right.Width, left.Height);
             result.FillMatrixWithValue(new T());
             for (int i = 0; i < left.Height; i++)
@@ -214,6 +216,38 @@ namespace GaussianElimination
                     {
                         result[i, j] += left[i, k] * right[k, j];
                     }
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// The -.
+        /// </summary>
+        /// <param name="left">
+        /// The left.
+        /// </param>
+        /// <param name="right">
+        /// The right.
+        /// </param>
+        /// <returns>
+        /// </returns>
+        /// <exception cref="ArgumentException">
+        /// </exception>
+        public static MyMatrix<T> operator -(MyMatrix<T> left, MyMatrix<T> right)
+        {
+            if (left.Width != right.Width || left.Height != right.Height)
+            {
+                throw new ArgumentException("Subtract is allowed for matrices of equal dimensions.");
+            }
+
+            MyMatrix<T> result = new MyMatrix<T>(left.Width, right.Height);
+            for (int i = 0; i < left.Height; i++)
+            {
+                for (int j = 0; j < left.Width; j++)
+                {
+                    result[i, j] = left[i, j] - right[i, j];
                 }
             }
 
@@ -300,6 +334,30 @@ namespace GaussianElimination
         public MyMatrix<T> GetRow(int i)
         {
             return null;
+        }
+
+        /// <summary>
+        /// The relative error.
+        /// </summary>
+        /// <param name="expected">
+        /// The expected.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Value"/>.
+        /// </returns>
+        public Value<T> RelativeError(MyMatrix<T> expected)
+        {
+            Value<T> sum = new T();
+            for (int i = 0; i < this.Height; i++)
+            {
+                for (int j = 0; j < this.Width; j++)
+                {
+                    var err = expected[i, j] - this[i, j];
+                    sum += err * err;
+                }
+            }
+            
+            return sum;
         }
 
         /// <summary>

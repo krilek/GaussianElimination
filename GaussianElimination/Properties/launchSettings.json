@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "GaussianElimination": {
+      "commandName": "Project",
+      "commandLineArgs": "double"
+    }
+  }
+}

@@ -171,29 +171,17 @@ namespace GaussianElimination
         /// </returns>
         protected override int Compare(Value<Fraction> v2)
         {
-            var l = (Fraction)this.Clone(); // TODO: Fix me, compare with 0
-            var r = (Fraction)v2.Clone();
-            this.SetCommonDenominator(l, r);
-            if (l.Nominator > r.Nominator)
+            var diff = (Fraction)(this - v2);
+            if (diff.Nominator > BigInteger.Zero)
             {
                 return 1;
             }
 
-            if (l.Nominator == r.Nominator)
+            if (diff.Nominator == BigInteger.Zero)
             {
                 return 0;
             }
-
             return -1;
-        }
-
-        private void SetCommonDenominator(Fraction l, Fraction r)
-        {
-            BigInteger tempDenominator = l.Denominator;
-            l.Denominator *= r.Denominator;
-            l.Nominator *= r.Denominator;
-            r.Denominator = l.Denominator;
-            r.Nominator *= tempDenominator;
         }
 
         /// <summary>

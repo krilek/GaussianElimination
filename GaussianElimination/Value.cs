@@ -234,5 +234,6 @@ namespace GaussianElimination
         /// The <see cref="Value"/>.
         /// </returns>
         protected abstract Value<T> Subtract(Value<T> v2);
+
     }
 }
