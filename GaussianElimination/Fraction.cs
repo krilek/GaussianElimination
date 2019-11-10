@@ -157,7 +157,7 @@ namespace GaussianElimination
             var n = this.Nominator * ((Fraction)v2).Denominator + ((Fraction)v2).Nominator * this.Denominator;
             if (n == BigInteger.Zero) return Zero;
             var d = this.Denominator * ((Fraction)v2).Denominator;
-            return new Fraction(n, d).Reduce();
+            return new Fraction(n, d);
         }
 
         /// <summary>
@@ -171,7 +171,7 @@ namespace GaussianElimination
         /// </returns>
         protected override int Compare(Value<Fraction> v2)
         {
-            var l = (Fraction)this.Clone();
+            var l = (Fraction)this.Clone(); // TODO: Fix me, compare with 0
             var r = (Fraction)v2.Clone();
             this.SetCommonDenominator(l, r);
             if (l.Nominator > r.Nominator)
@@ -210,7 +210,7 @@ namespace GaussianElimination
             var n = this.Nominator * ((Fraction)v2).Denominator;
             if (n == BigInteger.Zero) return Zero;
             var d = this.Denominator * ((Fraction)v2).Nominator;
-            return new Fraction(n, d).MoveSignToNominator().Reduce();
+            return new Fraction(n, d).MoveSignToNominator();
         }
 
         private Fraction MoveSignToNominator()
@@ -255,7 +255,7 @@ namespace GaussianElimination
             var n = this.Nominator * ((Fraction)v2).Nominator;
             if (n == BigInteger.Zero) return Zero;
             var d = this.Denominator * ((Fraction)v2).Denominator;
-            return new Fraction(n, d).Reduce();
+            return new Fraction(n, d);
         }
 
         /// <summary>
@@ -273,7 +273,7 @@ namespace GaussianElimination
             var n = this.Nominator * ((Fraction)v2).Denominator - ((Fraction)v2).Nominator * this.Denominator;
             if (n == BigInteger.Zero) return Zero;
             var d = this.Denominator * ((Fraction)v2).Denominator;
-            return new Fraction(n, d).MoveSignToNominator().Reduce();
+            return new Fraction(n, d).MoveSignToNominator();
         }
     }
 }

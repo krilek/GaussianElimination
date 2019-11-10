@@ -1,14 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="LinearSolver.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   The linear solver.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-
-#region copyright
+﻿#region copyright
 
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="LinearSolver.cs">
@@ -26,6 +16,7 @@ namespace GaussianElimination
 {
     #region Usings
 
+    using System;
     using System.Linq;
 
     #endregion
@@ -57,6 +48,7 @@ namespace GaussianElimination
             int[] columnsLocations = Enumerable.Range(0, vector.Height).ToArray();
             for (int i = 0; i < vector.Height; i++)
             {
+                Console.WriteLine($"Full GAUSS: ROW:{i}/{vector.Height}");
                 int rowToSwap = i;
                 int columnToSwap = i;
 
@@ -118,6 +110,7 @@ namespace GaussianElimination
             var v = new MyMatrix<T>(vector);
             for (var row = 0; row < v.Height; row++)
             {
+                Console.WriteLine($"GAUSS: ROW:{row}/{v.Height}");
                 CreateStep(m, v, row);
             }
 
@@ -145,6 +138,7 @@ namespace GaussianElimination
             var v = new MyMatrix<T>(vector);
             for (int i = 0; i < vector.Height; i++)
             {
+                Console.WriteLine($"Partial GAUSS: ROW:{i}/{vector.Height}");
                 int rowToSwap = i;
                 for (int j = i + 1; j < vector.Height; j++)
                 {

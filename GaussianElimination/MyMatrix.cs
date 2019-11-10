@@ -200,7 +200,24 @@ namespace GaussianElimination
         /// </returns>
         public static MyMatrix<T> operator *(MyMatrix<T> left, MyMatrix<T> right)
         {
-            return null;
+            if (left.Width != right.Height)
+            {
+                throw new ArgumentException("When multiplying matrix A must have equal width with height of matrix B.");
+            }
+            var result = new MyMatrix<T>(right.Width, left.Height);
+            result.FillMatrixWithValue(new T());
+            for (int i = 0; i < left.Height; i++)
+            {
+                for (int j = 0; j < right.Width; j++)
+                {
+                    for (int k = 0; k < right.Height; k++)
+                    {
+                        result[i, j] += left[i, k] * right[k, j];
+                    }
+                }
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -353,12 +370,14 @@ namespace GaussianElimination
             var sb = new StringBuilder();
             for (var i = 0; i < this.Height; i++)
             {
+                sb.Append("[");
+
                 for (var j = 0; j < this.Width; j++)
                 {
-                    sb.Append($"{this.Matrix[i, j]} ");
+                    sb.Append($"{this.Matrix[i, j]}, ");
                 }
 
-                sb.AppendLine();
+                sb.AppendLine("],");
             }
 
             return sb.ToString();

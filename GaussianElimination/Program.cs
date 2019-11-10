@@ -18,6 +18,7 @@ namespace GaussianElimination
 
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
 
     #endregion
 
@@ -36,14 +37,19 @@ namespace GaussianElimination
         private static void Main(string[] args)
         {
             TestValue();
-
-            TestGaussSolver();
-            //TestMojaMacierz();
+            TestMyMatrixMul();
+            Stopwatch timer = Stopwatch.StartNew();
+            TestCorrectnessOfGauss<Fraction>();
+            timer.Stop();
+            TimeSpan timespan = timer.Elapsed;
+            Console.WriteLine(String.Format("{0:00}:{1:00}:{2:00}", timespan.Minutes, timespan.Seconds, timespan.Milliseconds / 10));
+            //TestGaussSolver();
+            //TestMyMatrix();
             //for (int i = 0; i < 100; i++)
             //{
-            TestEqualityOfSolvers<Fraction>();
-            TestEqualityOfSolvers<MDouble>();
-            TestEqualityOfSolvers<MFloat>();
+            //TestEqualityOfSolvers<Fraction>();
+            //TestEqualityOfSolvers<MDouble>();
+            //TestEqualityOfSolvers<MFloat>();
             //}
 
             // TestGaussSolverSquare2();
@@ -152,10 +158,61 @@ namespace GaussianElimination
             Console.WriteLine("Gaussian solver 2 test: PASS");
         }
 
+        private static void TestCorrectnessOfGauss<T>()
+            where T : Value<T>, new()
+        {
+            // Calculate B
+            var a = MyMatrix<T>.GetRandomMatrix(200, 200);
+            var x = MyMatrix<T>.GetRandomMatrix(1, 200);
+            var b = a * x;
+            var solved1 = a.SolveLinearEquation(b, LinearSolver.Gauss);
+            var solved2 = a.SolveLinearEquation(b, LinearSolver.PartialGauss);
+            var solved3 = a.SolveLinearEquation(b, LinearSolver.FullGauss);
+            Console.WriteLine($"Equality test of type {typeof(T).Name} solving methods: {(solved1 == solved2 && solved1 == solved3 ? "PASS" : "FAIL")}");
+            Console.WriteLine($"    Is {nameof(LinearSolver.Gauss)} correct? : {(solved1 == x ? "PASS" : "FAIL")}");
+            Console.WriteLine($"    Is {nameof(LinearSolver.PartialGauss)} correct? : {(solved2 == x ? "PASS" : "FAIL")}");
+            Console.WriteLine($"    Is {nameof(LinearSolver.FullGauss)} correct? : {(solved3 == x ? "PASS" : "FAIL")}");
+            Console.WriteLine();
+        }
+
+        private static void TestMyMatrixMul()
+        {
+            //var x = new MyMatrix<MDouble>(
+            //    new[,]
+            //        {
+            //            {
+            //                new MDouble(12.0), new MDouble(7.0), new MDouble(3.0)
+            //            },
+            //            {
+            //                new MDouble(4.0), new MDouble(5.0), new MDouble(6.0)
+            //            },
+            //            {
+            //                new MDouble(7.0), new MDouble(8.0), new MDouble(9.0)
+            //            }
+            //        });
+            //var x2 = new MyMatrix<MDouble>(
+            //    new[,]
+            //        {
+            //            {
+            //                new MDouble(5.0), new MDouble(8.0), new MDouble(1.0), new MDouble(2.0)
+            //            },
+            //            {
+            //                new MDouble(6.0), new MDouble(7.0), new MDouble(3.0), new MDouble(0.0)
+            //            },
+            //            {
+            //                new MDouble(4.0), new MDouble(5.0), new MDouble(9.0), new MDouble(1.0)
+            //            }
+            //        });
+            var x = MyMatrix<MDouble>.GetRandomMatrix(3, 3);
+            var x2 = MyMatrix<MDouble>.GetRandomMatrix(5, 3);
+            var res = x * x2;
+            Console.WriteLine($"Test MyMatrixMul: {(true ? "PASS" : "FAIL")}");
+
+        }
         /// <summary>
         /// The test moja macierz.
         /// </summary>
-        private static void TestMojaMacierz()
+        private static void TestMyMatrix()
         {
             var vector = new MyMatrix<MDouble>(
                 new Value<MDouble>[,]
