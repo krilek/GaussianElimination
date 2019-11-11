@@ -79,5 +79,9 @@ namespace GaussianElimination
         {
             return this.Value.CompareTo(((MFloat)v2).Value);
         }
+        public override Value<MFloat> SetValue(int nominator, int denominator)
+        {
+            return new MFloat(((float)nominator) / ((float)denominator));
+        }
     }
 }

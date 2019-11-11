@@ -263,5 +263,12 @@ namespace GaussianElimination
             var d = this.Denominator * ((Fraction)v2).Denominator;
             return new Fraction(n, d).MoveSignToNominator();
         }
+
+        public override Value<Fraction> SetValue(int nominator, int denominator)
+        {
+            this.Nominator = new BigInteger(nominator);
+            this.Denominator = new BigInteger(denominator);
+            return this;
+        }
     }
 }

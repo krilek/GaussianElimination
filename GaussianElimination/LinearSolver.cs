@@ -60,7 +60,7 @@ namespace GaussianElimination
                 {
                     for (int k = i; k < matrix.Width; k++)
                     {
-                        if (m[j, k] > m[rowToSwap, columnToSwap])
+                        if (m[j, k].Absolute() > m[rowToSwap, columnToSwap].Absolute())
                         {
                             rowToSwap = j;
                             columnToSwap = k;
@@ -149,7 +149,7 @@ namespace GaussianElimination
                 int rowToSwap = i;
                 for (int j = i + 1; j < vector.Height; j++)
                 {
-                    if (m[j, i] > m[rowToSwap, i])
+                    if (m[j, i].Absolute() > m[rowToSwap, i].Absolute())
                     {
                         rowToSwap = j;
                     }

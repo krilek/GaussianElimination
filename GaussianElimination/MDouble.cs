@@ -74,6 +74,11 @@ namespace GaussianElimination
             return new MDouble(this.Value - ((MDouble)v2).Value);
         }
 
+        public override Value<MDouble> SetValue(int nominator, int denominator)
+        {
+            return new MDouble(((double)nominator) / ((double)denominator));
+        }
+
         protected override int Compare(Value<MDouble> v2)
         {
             return this.Value.CompareTo(((MDouble)v2).Value);

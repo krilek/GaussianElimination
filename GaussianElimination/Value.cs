@@ -235,5 +235,16 @@ namespace GaussianElimination
         /// </returns>
         protected abstract Value<T> Subtract(Value<T> v2);
 
+        public abstract Value<T> SetValue(int nominator, int denominator);
+
+        public Value<T> Absolute()
+        {
+            if (this > new T())
+            {
+                return this;
+            }
+
+            return this * new T().SetValue(-1, 1);
+        }
     }
 }

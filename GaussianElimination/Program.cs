@@ -198,8 +198,16 @@ namespace GaussianElimination
                 // Verify results
                 foreach ((string name, Func<MyMatrix<T>, MyMatrix<T>, MyMatrix<T>> solvingMethod) in solvingMethods)
                 {
-                    (long time, string error) = TestCorrectnessOfGauss<T>(a, x, b, solvingMethod);
-                    StoreResults(filename, size, time, error, name);
+                    try
+                    {
+                        (long time, string error) = TestCorrectnessOfGauss<T>(a, x, b, solvingMethod);
+                        StoreResults(filename, size, time, error, name);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine($"Exception {name} {size}");
+                        Console.WriteLine(e);
+                    }
                 }
 
                 size += increment;
@@ -328,6 +336,33 @@ namespace GaussianElimination
                                    () => new Fraction(1, 2) < new Fraction(2, 3),
                                    () => new Fraction(1, 5) == new Fraction(5, 25),
 
+                                   // absolute tests
+                                   () => new Fraction(-1, 1).Absolute() == new Fraction(1,1),
+                                   () => new Fraction(-5, 2).Absolute() == new Fraction(5,2),
+                                   () => new Fraction(-10, 3).Absolute() == new Fraction(10,3),
+                                   () => new Fraction(-2, 4).Absolute() == new Fraction(2,4),
+                                   () => new Fraction(1, 1).Absolute() == new Fraction(1,1),
+                                   () => new Fraction(5, 2).Absolute() == new Fraction(5,2),
+                                   () => new Fraction(10, 1).Absolute() == new Fraction(10,1),
+                                   () => new Fraction(2, 1).Absolute() == new Fraction(2,1),
+
+                                   () => new MDouble().SetValue(-1, 1).Absolute() == new MDouble().SetValue(1,1),
+                                   () => new MDouble().SetValue(-5, 2).Absolute() == new MDouble().SetValue(5,2),
+                                   () => new MDouble().SetValue(-10, 3).Absolute() == new MDouble().SetValue(10,3),
+                                   () => new MDouble().SetValue(-2, 4).Absolute() == new MDouble().SetValue(2,4),
+                                   () => new MDouble().SetValue(1, 1).Absolute() == new MDouble().SetValue(1,1),
+                                   () => new MDouble().SetValue(5, 2).Absolute() == new MDouble().SetValue(5,2),
+                                   () => new MDouble().SetValue(10, 1).Absolute() == new MDouble().SetValue(10,1),
+                                   () => new MDouble().SetValue(2, 1).Absolute() == new MDouble().SetValue(2,1),
+
+                                   () => new MFloat().SetValue(-1, 1).Absolute() == new MFloat().SetValue(1,1),
+                                   () => new MFloat().SetValue(-5, 2).Absolute() == new MFloat().SetValue(5,2),
+                                   () => new MFloat().SetValue(-10, 3).Absolute() == new MFloat().SetValue(10,3),
+                                   () => new MFloat().SetValue(-2, 4).Absolute() == new MFloat().SetValue(2,4),
+                                   () => new MFloat().SetValue(1, 1).Absolute() == new MFloat().SetValue(1,1),
+                                   () => new MFloat().SetValue(5, 2).Absolute() == new MFloat().SetValue(5,2),
+                                   () => new MFloat().SetValue(10, 1).Absolute() == new MFloat().SetValue(10,1),
+                                   () => new MFloat().SetValue(2, 1).Absolute() == new MFloat().SetValue(2,1),
                                    // () => new Value<Fraction>(new Fraction(1,-3)) + new Value<Fraction>(new Fraction(1,-3)) == new Value<Fraction>(new Fraction(-2,3)),
                                    // () => new Value<Fraction>(new Fraction(-1,3)) + new Value<Fraction>(new Fraction(-1,3)) == new Value<Fraction>(new Fraction(-2,3))
                                };
