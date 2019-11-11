@@ -6,7 +6,7 @@
 // krilek@gmail.com
 // </copyright>
 // <summary>
-// 
+//     The matrix tests.
 // </summary>
 //  --------------------------------------------------------------------------------------------------------------------
 
@@ -15,6 +15,8 @@
 namespace GaussianEliminationTests
 {
     #region Usings
+
+    using System;
 
     using GaussianElimination.Lib;
 
@@ -75,6 +77,87 @@ namespace GaussianEliminationTests
                                         new MDouble().SetValue(119), new MDouble().SetValue(157),
                                         new MDouble().SetValue(112), new MDouble().SetValue(23)
                                     }
+                                })
+                    },
+                new object[]
+                    {
+                        new MyMatrix<MDouble>(
+                            new[,]
+                                {
+                                    { new MDouble(1), new MDouble(2), new MDouble(1), },
+                                    { new MDouble(0), new MDouble(1), new MDouble(0), },
+                                    { new MDouble(2), new MDouble(3), new MDouble(4), },
+                                }),
+                        new MyMatrix<MDouble>(
+                            new[,]
+                                {
+                                    { new MDouble(2), new MDouble(5) }, { new MDouble(6), new MDouble(7) },
+                                    { new MDouble(1), new MDouble(8) },
+                                }),
+                        new MyMatrix<MDouble>(
+                            new[,]
+                                {
+                                    { new MDouble(15), new MDouble(27) }, { new MDouble(6), new MDouble(7) },
+                                    { new MDouble(26), new MDouble(63) },
+                                })
+                    }
+            };
+
+        /// <summary>
+        ///     The matrix subtract cases.
+        /// </summary>
+        private static object[] matrixSubtractCases =
+            {
+                new object[]
+                    {
+                        new MyMatrix<MDouble>(
+                            new[,]
+                                {
+                                    {
+                                        new MDouble().SetValue(12), new MDouble().SetValue(7), new MDouble().SetValue(3)
+                                    },
+                                    { new MDouble().SetValue(4), new MDouble().SetValue(5), new MDouble().SetValue(6) },
+                                    { new MDouble().SetValue(7), new MDouble().SetValue(8), new MDouble().SetValue(9) }
+                                }),
+                        new MyMatrix<MDouble>(
+                            new[,]
+                                {
+                                    { new MDouble().SetValue(5), new MDouble().SetValue(8), new MDouble().SetValue(1) },
+                                    { new MDouble().SetValue(6), new MDouble().SetValue(7), new MDouble().SetValue(3) },
+                                    { new MDouble().SetValue(4), new MDouble().SetValue(5), new MDouble().SetValue(9) }
+                                }),
+                        new MyMatrix<MDouble>(
+                            new[,]
+                                {
+                                    {
+                                        new MDouble().SetValue(7), new MDouble().SetValue(-1), new MDouble().SetValue(2)
+                                    },
+                                    {
+                                        new MDouble().SetValue(-2), new MDouble().SetValue(-2),
+                                        new MDouble().SetValue(3)
+                                    },
+                                    { new MDouble().SetValue(3), new MDouble().SetValue(3), new MDouble().SetValue(0) }
+                                })
+                    },
+                new object[]
+                    {
+                        new MyMatrix<MDouble>(
+                            new[,]
+                                {
+                                    { new MDouble(1), new MDouble(2) }, { new MDouble(0), new MDouble(1) },
+                                    { new MDouble(2), new MDouble(3) },
+                                }),
+                        new MyMatrix<MDouble>(
+                            new[,]
+                                {
+                                    { new MDouble(2), new MDouble(5) }, { new MDouble(6), new MDouble(7) },
+                                    { new MDouble(1), new MDouble(8) },
+                                }),
+                        new MyMatrix<MDouble>(
+                            new[,]
+                                {
+                                    { new MDouble(-1), new MDouble(-3) }, { new MDouble(-6), new MDouble(-6) },
+                                    { new MDouble(1), new MDouble(-5) },
                                 })
                     }
             };
@@ -152,7 +235,7 @@ namespace GaussianEliminationTests
         public void SwapRowTest(int columnA, int columnB)
         {
             var matrix = new MyMatrix<MDouble>(
-                new Value<MDouble>[,]
+                new[,]
                     {
                         { new MDouble().SetValue(3.0), new MDouble().SetValue(15.0), new MDouble().SetValue(14.0) },
                         { new MDouble().SetValue(2.1), new MDouble().SetValue(2.2), new MDouble().SetValue(2.3), },
@@ -179,7 +262,7 @@ namespace GaussianEliminationTests
         /// </param>
         [Test]
         [TestCaseSource(nameof(matrixMultiplyCases))]
-        public void VerifyMultiplyDouble(MyMatrix<MDouble> a, MyMatrix<MDouble> b, MyMatrix<MDouble> res)
+        public void VerifyMultiply(MyMatrix<MDouble> a, MyMatrix<MDouble> b, MyMatrix<MDouble> res)
         {
             TestContext.WriteLine(a);
             TestContext.WriteLine("Times");
@@ -188,6 +271,85 @@ namespace GaussianEliminationTests
             var calculatedResult = a * b;
             TestContext.WriteLine(calculatedResult);
             Assert.AreEqual(calculatedResult, res);
+        }
+
+        /// <summary>
+        /// The verify subtract.
+        /// </summary>
+        /// <param name="a">
+        /// The a.
+        /// </param>
+        /// <param name="b">
+        /// The b.
+        /// </param>
+        /// <param name="res">
+        /// The res.
+        /// </param>
+        [Test]
+        [TestCaseSource(nameof(matrixSubtractCases))]
+        public void VerifySubtract(MyMatrix<MDouble> a, MyMatrix<MDouble> b, MyMatrix<MDouble> res)
+        {
+            TestContext.WriteLine(a);
+            TestContext.WriteLine(" minus ");
+            TestContext.WriteLine(b);
+            TestContext.WriteLine(" equals ");
+            var calculatedResult = a - b;
+            TestContext.WriteLine(calculatedResult);
+            Assert.AreEqual(calculatedResult, res);
+        }
+
+        /// <summary>
+        /// The verify that random matrix is not null.
+        /// </summary>
+        /// <param name="size">
+        /// The size.
+        /// </param>
+        [Test]
+        [TestCase(5)]
+        [TestCase(10)]
+        [TestCase(20)]
+        [TestCase(25)]
+        [TestCase(50)]
+        public void VerifyThatRandomMatrixIsNotNull(int size)
+        {
+            var x = MyMatrix<MDouble>.GetRandomMatrix(size, size);
+            Assert.AreEqual(size, x.Height);
+            Assert.AreEqual(size, x.Width);
+            for (int i = 0; i < x.Height; i++)
+            {
+                for (int j = 0; j < x.Width; j++)
+                {
+                    Assert.NotNull(x[i, j]);
+                }
+            }
+        }
+
+        /// <summary>
+        /// The verify that subtract throws exception.
+        /// </summary>
+        /// <param name="a">
+        /// The a.
+        /// </param>
+        /// <param name="b">
+        /// The b.
+        /// </param>
+        /// <param name="res">
+        /// The res.
+        /// </param>
+        [Test]
+        [TestCaseSource(nameof(matrixMultiplyCases))]
+        public void VerifyThatSubtractThrowsException(MyMatrix<MDouble> a, MyMatrix<MDouble> b, MyMatrix<MDouble> res)
+        {
+            TestContext.WriteLine(a);
+            TestContext.WriteLine(" minus ");
+            TestContext.WriteLine(b);
+            TestContext.WriteLine(" equals ");
+            TestContext.WriteLine("Exception!");
+            Assert.Throws<ArgumentException>(
+                () =>
+                    {
+                        var x = a - b;
+                    });
         }
     }
 }
