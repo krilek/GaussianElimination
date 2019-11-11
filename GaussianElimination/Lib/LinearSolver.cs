@@ -6,13 +6,13 @@
 // krilek@gmail.com
 // </copyright>
 // <summary>
-// 
+// Grouped methods of solving linear equations.
 // </summary>
 //  --------------------------------------------------------------------------------------------------------------------
 
 #endregion
 
-namespace GaussianElimination
+namespace GaussianElimination.Lib
 {
     #region Usings
 
@@ -24,10 +24,10 @@ namespace GaussianElimination
     /// <summary>
     ///     The linear solver.
     /// </summary>
-    internal static class LinearSolver
+    public static class LinearSolver
     {
         /// <summary>
-        /// The full gauss.
+        /// The full gauss with swapping rows and columns of equation.
         /// </summary>
         /// <param name="matrix">
         /// The matrix.
@@ -92,7 +92,7 @@ namespace GaussianElimination
         }
 
         /// <summary>
-        /// The gauss.
+        /// The simple gauss solving algorithm.
         /// </summary>
         /// <param name="matrix">
         /// The matrix.
@@ -123,7 +123,7 @@ namespace GaussianElimination
         }
 
         /// <summary>
-        /// The partial gauss.
+        /// The partial gauss with swapping rows of equation.
         /// </summary>
         /// <param name="matrix">
         /// The matrix.
@@ -157,10 +157,9 @@ namespace GaussianElimination
 
                 if (rowToSwap != i)
                 {
+                    // Swap rows
                     m.SwapRows(rowToSwap, i);
                     v.SwapRows(rowToSwap, i);
-
-                    // Swap rows
                 }
 
                 CreateStep(m, v, i);
@@ -209,17 +208,17 @@ namespace GaussianElimination
         {
             for (var i = row + 1; i < vector.Height; i++)
             {
-                var alpha = matrix[i, row] / matrix[row, row];
-                vector[i, 0] = vector[i, 0] - (alpha * vector[row, 0]);
+                var multiplier = matrix[i, row] / matrix[row, row];
+                vector[i, 0] = vector[i, 0] - (multiplier * vector[row, 0]);
                 for (var j = row; j < vector.Height; j++)
                 {
-                    matrix[i, j] = matrix[i, j] - (alpha * matrix[row, j]);
+                    matrix[i, j] = matrix[i, j] - (multiplier * matrix[row, j]);
                 }
             }
         }
 
         /// <summary>
-        /// The retrieve result.
+        /// The retrieve result from stepped matrix.
         /// </summary>
         /// <param name="matrix">
         /// The matrix.

@@ -1,13 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Fraction.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   The fraction.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region copyright
+﻿#region copyright
 
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="Fraction.cs">
@@ -21,7 +12,7 @@
 
 #endregion
 
-namespace GaussianElimination
+namespace GaussianElimination.Lib
 {
     #region Usings
 
@@ -31,17 +22,17 @@ namespace GaussianElimination
     #endregion
 
     /// <summary>
-    /// The fraction.
+    ///     The fraction.
     /// </summary>
     public sealed class Fraction : Value<Fraction>
     {
         /// <summary>
-        /// The zero.
+        ///     The zero.
         /// </summary>
         public static Fraction Zero = new Fraction(0, 1);
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Fraction"/> class.
+        ///     Initializes a new instance of the <see cref="Fraction" /> class.
         /// </summary>
         public Fraction()
             : this(0, 1)
@@ -64,24 +55,25 @@ namespace GaussianElimination
             if (denominator == BigInteger.Zero) throw new ArgumentOutOfRangeException(nameof(denominator));
             this.Nominator = nominator;
             this.Denominator = denominator;
+            this.MoveSignToNominator();
             this.Reduce();
         }
 
         /// <summary>
-        /// Gets the denominator.
+        ///     Gets the denominator.
         /// </summary>
         public BigInteger Denominator { get; private set; }
 
         /// <summary>
-        /// Gets the nominator.
+        ///     Gets the nominator.
         /// </summary>
         public BigInteger Nominator { get; private set; }
 
         /// <summary>
-        /// The clone.
+        ///     Clone fraction.
         /// </summary>
         /// <returns>
-        /// The <see cref="Value"/>.
+        ///     The <see cref="Value" />.
         /// </returns>
         public override Value<Fraction> Clone()
         {
@@ -89,10 +81,10 @@ namespace GaussianElimination
         }
 
         /// <summary>
-        /// The get hash code.
+        ///     The get hash code.
         /// </summary>
         /// <returns>
-        /// The <see cref="int"/>.
+        ///     The <see cref="int" />.
         /// </returns>
         public override int GetHashCode()
         {
@@ -103,24 +95,10 @@ namespace GaussianElimination
         }
 
         /// <summary>
-        /// The rand.
-        /// </summary>
-        /// <param name="nominator">
-        /// The nominator.
-        /// </param>
-        /// <returns>
-        /// The <see cref="Value"/>.
-        /// </returns>
-        public override Value<Fraction> Rand(int nominator)
-        {
-            return new Fraction(nominator, 1 << 16);
-        }
-
-        /// <summary>
-        /// The reduce.
+        ///     Reduce fraction
         /// </summary>
         /// <returns>
-        /// The <see cref="Fraction"/>.
+        ///     The <see cref="Fraction" />.
         /// </returns>
         public Fraction Reduce()
         {
@@ -131,10 +109,29 @@ namespace GaussianElimination
         }
 
         /// <summary>
-        /// The to string.
+        /// Generic way to create Fraction
+        /// </summary>
+        /// <param name="nominator">
+        /// The nominator.
+        /// </param>
+        /// <param name="denominator">
+        /// The denominator.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Value"/>.
+        /// </returns>
+        public override Value<Fraction> SetValue(double nominator, double denominator)
+        {
+            this.Nominator = new BigInteger(nominator);
+            this.Denominator = new BigInteger(denominator);
+            return this;
+        }
+
+        /// <summary>
+        ///     The to string.
         /// </summary>
         /// <returns>
-        /// The <see cref="string"/>.
+        ///     The <see cref="string" />.
         /// </returns>
         public override string ToString()
         {
@@ -144,7 +141,7 @@ namespace GaussianElimination
         }
 
         /// <summary>
-        /// The add.
+        /// Add Fractions
         /// </summary>
         /// <param name="v2">
         /// The v 2.
@@ -161,13 +158,13 @@ namespace GaussianElimination
         }
 
         /// <summary>
-        /// The compare.
+        /// Comparing functions
         /// </summary>
         /// <param name="v2">
         /// The v 2.
         /// </param>
         /// <returns>
-        /// The <see cref="int"/>.
+        /// The <see cref="int"/> 1 if left is bigger, -1 if right is bigger.
         /// </returns>
         protected override int Compare(Value<Fraction> v2)
         {
@@ -181,11 +178,12 @@ namespace GaussianElimination
             {
                 return 0;
             }
+
             return -1;
         }
 
         /// <summary>
-        /// The divide.
+        /// Divide fractions.
         /// </summary>
         /// <param name="v2">
         /// The v 2.
@@ -201,16 +199,6 @@ namespace GaussianElimination
             return new Fraction(n, d).MoveSignToNominator();
         }
 
-        private Fraction MoveSignToNominator()
-        {
-            if (this.Nominator < 0 && this.Denominator < 0 || this.Nominator > 0 && this.Denominator < 0)
-            {
-                this.Nominator *= -1;
-                this.Denominator *= -1;
-            }
-
-            return this;
-        }
         /// <summary>
         /// The equals.
         /// </summary>
@@ -230,7 +218,7 @@ namespace GaussianElimination
         }
 
         /// <summary>
-        /// The multiply.
+        /// Multiply fractions.
         /// </summary>
         /// <param name="v2">
         /// The v 2.
@@ -247,7 +235,7 @@ namespace GaussianElimination
         }
 
         /// <summary>
-        /// The subtract.
+        /// Subtract fractions.
         /// </summary>
         /// <param name="v2">
         /// The v 2.
@@ -264,10 +252,20 @@ namespace GaussianElimination
             return new Fraction(n, d).MoveSignToNominator();
         }
 
-        public override Value<Fraction> SetValue(int nominator, int denominator)
+        /// <summary>
+        /// Fix notation of Fraction to store sign in nominator.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="Fraction"/>.
+        /// </returns>
+        private Fraction MoveSignToNominator()
         {
-            this.Nominator = new BigInteger(nominator);
-            this.Denominator = new BigInteger(denominator);
+            if (this.Nominator < 0 && this.Denominator < 0 || this.Nominator > 0 && this.Denominator < 0)
+            {
+                this.Nominator *= -1;
+                this.Denominator *= -1;
+            }
+
             return this;
         }
     }

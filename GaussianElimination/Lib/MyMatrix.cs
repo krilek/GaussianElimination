@@ -6,27 +6,27 @@
 // krilek@gmail.com
 // </copyright>
 // <summary>
-// 
+// Matrix for storing Value<T> types
 // </summary>
 //  --------------------------------------------------------------------------------------------------------------------
 
 #endregion
 
-namespace GaussianElimination
+namespace GaussianElimination.Lib
 {
     #region Usings
 
     using System;
     using System.Collections.Generic;
-    using System.Numerics;
     using System.Text;
 
     #endregion
 
     /// <summary>
-    /// The my matrix.
+    /// Matrix for storing Value types
     /// </summary>
     /// <typeparam name="T">
+    /// Classes implementing Value abstract class.
     /// </typeparam>
     public class MyMatrix<T> : IEquatable<MyMatrix<T>>
         where T : Value<T>, new()
@@ -106,7 +106,7 @@ namespace GaussianElimination
         public int Width { get; private set; }
 
         /// <summary>
-        /// The this.
+        /// Simplified indexing
         /// </summary>
         /// <param name="x">
         /// The x.
@@ -124,7 +124,7 @@ namespace GaussianElimination
         }
 
         /// <summary>
-        /// The get random matrix.
+        /// Create random matrix.
         /// </summary>
         /// <param name="width">
         /// The width.
@@ -140,7 +140,11 @@ namespace GaussianElimination
         /// </returns>
         public static MyMatrix<T> GetRandomMatrix(int width, int height, int? seed = null)
         {
-            if (seed == null) seed = Guid.NewGuid().GetHashCode();
+            if (seed == null)
+            {
+                seed = Guid.NewGuid().GetHashCode();
+            }
+
             const int Min = -1 << 16;
             const int Max = (1 << 16) - 1;
             var rnd = new Random(seed.Value);
@@ -149,7 +153,7 @@ namespace GaussianElimination
             {
                 for (var j = 0; j < matrix.Width; j++)
                 {
-                    matrix.Matrix[i, j] = new T().Rand(rnd.Next(Min, Max));
+                    matrix.Matrix[i, j] = new T().SetValue(rnd.Next(Min, Max), 1 << 16);
                 }
             }
 
@@ -166,11 +170,9 @@ namespace GaussianElimination
         ///     The right.
         /// </param>
         /// <returns>
+        /// <see cref="bool"/> true if matrices are equal.
         /// </returns>
-        public static bool operator ==(MyMatrix<T> left, MyMatrix<T> right)
-        {
-            return EqualityComparer<MyMatrix<T>>.Default.Equals(left, right);
-        }
+        public static bool operator ==(MyMatrix<T> left, MyMatrix<T> right) => EqualityComparer<MyMatrix<T>>.Default.Equals(left, right);
 
         /// <summary>
         ///     The !=.
@@ -182,11 +184,9 @@ namespace GaussianElimination
         ///     The right.
         /// </param>
         /// <returns>
+        /// <see cref="bool"/> true if matrices are not equal.
         /// </returns>
-        public static bool operator !=(MyMatrix<T> left, MyMatrix<T> right)
-        {
-            return !(left == right);
-        }
+        public static bool operator !=(MyMatrix<T> left, MyMatrix<T> right) => !(left == right);
 
         /// <summary>
         ///     The *.
@@ -198,6 +198,7 @@ namespace GaussianElimination
         ///     The right.
         /// </param>
         /// <returns>
+        /// <see cref="Matrix"/> multiplied matrices.
         /// </returns>
         public static MyMatrix<T> operator *(MyMatrix<T> left, MyMatrix<T> right)
         {
@@ -223,17 +224,19 @@ namespace GaussianElimination
         }
 
         /// <summary>
-        /// The -.
+        ///     The -.
         /// </summary>
         /// <param name="left">
-        /// The left.
+        ///     The left.
         /// </param>
         /// <param name="right">
-        /// The right.
+        ///     The right.
         /// </param>
         /// <returns>
+        /// <see cref="Matrix"/> subtracted matrices.
         /// </returns>
         /// <exception cref="ArgumentException">
+        /// Thrown when matrices are not equal.
         /// </exception>
         public static MyMatrix<T> operator -(MyMatrix<T> left, MyMatrix<T> right)
         {
@@ -263,10 +266,7 @@ namespace GaussianElimination
         /// <returns>
         /// The <see cref="bool"/>.
         /// </returns>
-        public override bool Equals(object obj)
-        {
-            return this.Equals(obj as MyMatrix<T>);
-        }
+        public override bool Equals(object obj) => this.Equals(obj as MyMatrix<T>);
 
         /// <summary>
         /// The equals.
@@ -307,8 +307,12 @@ namespace GaussianElimination
         public void FillMatrixWithValue(Value<T> value)
         {
             for (var i = 0; i < this.Height; i++)
-            for (var j = 0; j < this.Width; j++)
-                this.Matrix[i, j] = value;
+            {
+                for (var j = 0; j < this.Width; j++)
+                {
+                    this.Matrix[i, j] = value;
+                }
+            }
         }
 
         /// <summary>
@@ -317,24 +321,7 @@ namespace GaussianElimination
         /// <returns>
         ///     The <see cref="int" />.
         /// </returns>
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(this.Width, this.Height, this.Matrix);
-        }
-
-        /// <summary>
-        /// The get row.
-        /// </summary>
-        /// <param name="i">
-        /// The i.
-        /// </param>
-        /// <returns>
-        /// The <see cref="MyMatrix"/>.
-        /// </returns>
-        public MyMatrix<T> GetRow(int i)
-        {
-            return null;
-        }
+        public override int GetHashCode() => HashCode.Combine(this.Width, this.Height, this.Matrix);
 
         /// <summary>
         /// The relative error.
@@ -356,7 +343,7 @@ namespace GaussianElimination
                     sum += err * err;
                 }
             }
-            
+
             return sum;
         }
 
@@ -367,17 +354,15 @@ namespace GaussianElimination
         /// The vector.
         /// </param>
         /// <param name="solvingFunc">
-        /// The solving func.
+        /// The solving function to use.
         /// </param>
         /// <returns>
         /// The <see cref="MyMatrix"/>.
         /// </returns>
         public MyMatrix<T> SolveLinearEquation(
             MyMatrix<T> vector,
-            Func<MyMatrix<T>, MyMatrix<T>, MyMatrix<T>> solvingFunc)
-        {
-            return solvingFunc(this, vector);
-        }
+            Func<MyMatrix<T>, MyMatrix<T>, MyMatrix<T>> solvingFunc) =>
+            solvingFunc(this, vector);
 
         /// <summary>
         /// The swap columns.

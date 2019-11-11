@@ -6,32 +6,34 @@
 // krilek@gmail.com
 // </copyright>
 // <summary>
-// 
+// The value container.
 // </summary>
 //  --------------------------------------------------------------------------------------------------------------------
 
 #endregion
 
-namespace GaussianElimination
+namespace GaussianElimination.Lib
 {
     /// <summary>
-    /// The value.
+    /// The value container.
     /// </summary>
     /// <typeparam name="T">
+    /// Implementations of Value
     /// </typeparam>
     public abstract class Value<T>
         where T : Value<T>, new()
     {
         /// <summary>
-        /// The +.
+        ///     The +.
         /// </summary>
         /// <param name="v1">
-        /// The v 1.
+        ///     The v 1.
         /// </param>
         /// <param name="v2">
-        /// The v 2.
+        ///     The v 2.
         /// </param>
         /// <returns>
+        /// Added value
         /// </returns>
         public static Value<T> operator +(Value<T> v1, Value<T> v2)
         {
@@ -39,15 +41,16 @@ namespace GaussianElimination
         }
 
         /// <summary>
-        /// The /.
+        ///     The /.
         /// </summary>
         /// <param name="v1">
-        /// The v 1.
+        ///     The v 1.
         /// </param>
         /// <param name="v2">
-        /// The v 2.
+        ///     The v 2.
         /// </param>
         /// <returns>
+        /// Divided value
         /// </returns>
         public static Value<T> operator /(Value<T> v1, Value<T> v2)
         {
@@ -55,15 +58,16 @@ namespace GaussianElimination
         }
 
         /// <summary>
-        /// The ==.
+        ///     The ==.
         /// </summary>
         /// <param name="v1">
-        /// The v 1.
+        ///     The v 1.
         /// </param>
         /// <param name="v2">
-        /// The v 2.
+        ///     The v 2.
         /// </param>
         /// <returns>
+        /// True if equal
         /// </returns>
         public static bool operator ==(Value<T> v1, Value<T> v2)
         {
@@ -71,15 +75,16 @@ namespace GaussianElimination
         }
 
         /// <summary>
-        /// The &gt;.
+        ///     The &gt;.
         /// </summary>
         /// <param name="v1">
-        /// The v 1.
+        ///     The v 1.
         /// </param>
         /// <param name="v2">
-        /// The v 2.
+        ///     The v 2.
         /// </param>
         /// <returns>
+        /// True if <param name="v1"></param> bigger than <param name="v2"></param>.
         /// </returns>
         public static bool operator >(Value<T> v1, Value<T> v2)
         {
@@ -87,15 +92,16 @@ namespace GaussianElimination
         }
 
         /// <summary>
-        /// The !=.
+        ///     The !=.
         /// </summary>
         /// <param name="v1">
-        /// The v 1.
+        ///     The v 1.
         /// </param>
         /// <param name="v2">
-        /// The v 2.
+        ///     The v 2.
         /// </param>
         /// <returns>
+        /// True if <param name="v1"></param> not equal equal <param name="v2"></param>.
         /// </returns>
         public static bool operator !=(Value<T> v1, Value<T> v2)
         {
@@ -103,15 +109,16 @@ namespace GaussianElimination
         }
 
         /// <summary>
-        /// The &lt;.
+        ///     The &lt;.
         /// </summary>
         /// <param name="v1">
-        /// The v 1.
+        ///     The v 1.
         /// </param>
         /// <param name="v2">
-        /// The v 2.
+        ///     The v 2.
         /// </param>
         /// <returns>
+        /// True if <param name="v1"></param> smaller than <param name="v2"></param>.
         /// </returns>
         public static bool operator <(Value<T> v1, Value<T> v2)
         {
@@ -119,15 +126,16 @@ namespace GaussianElimination
         }
 
         /// <summary>
-        /// The *.
+        ///     The *.
         /// </summary>
         /// <param name="v1">
-        /// The v 1.
+        ///     The v 1.
         /// </param>
         /// <param name="v2">
-        /// The v 2.
+        ///     The v 2.
         /// </param>
         /// <returns>
+        /// Multiplied value
         /// </returns>
         public static Value<T> operator *(Value<T> v1, Value<T> v2)
         {
@@ -135,15 +143,16 @@ namespace GaussianElimination
         }
 
         /// <summary>
-        /// The -.
+        ///     The -.
         /// </summary>
         /// <param name="v1">
-        /// The v 1.
+        ///     The v 1.
         /// </param>
         /// <param name="v2">
-        /// The v 2.
+        ///     The v 2.
         /// </param>
         /// <returns>
+        /// Subtracted value
         /// </returns>
         public static Value<T> operator -(Value<T> v1, Value<T> v2)
         {
@@ -151,15 +160,45 @@ namespace GaussianElimination
         }
 
         /// <summary>
-        /// The clone.
+        /// Return change given value to absolute.
         /// </summary>
         /// <returns>
         /// The <see cref="Value"/>.
         /// </returns>
+        public Value<T> Absolute()
+        {
+            if (this > new T())
+            {
+                return this;
+            }
+
+            return this * new T().SetValue(-1, 1);
+        }
+
+        /// <summary>
+        ///     Clone given value
+        /// </summary>
+        /// <returns>
+        ///     The <see cref="Value" />.
+        /// </returns>
         public abstract Value<T> Clone();
 
         /// <summary>
-        /// The rand.
+        /// The set value.
+        /// </summary>
+        /// <param name="nominator">
+        /// The nominator.
+        /// </param>
+        /// <param name="denominator">
+        /// The denominator.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Value"/>.
+        /// </returns>
+        public abstract Value<T> SetValue(double nominator, double denominator);
+
+        /// <summary>
+        /// The set value.
         /// </summary>
         /// <param name="nominator">
         /// The nominator.
@@ -167,7 +206,10 @@ namespace GaussianElimination
         /// <returns>
         /// The <see cref="Value"/>.
         /// </returns>
-        public abstract Value<T> Rand(int nominator);
+        public Value<T> SetValue(double nominator)
+        {
+            return this.SetValue(nominator, 1);
+        }
 
         /// <summary>
         /// The add.
@@ -234,17 +276,5 @@ namespace GaussianElimination
         /// The <see cref="Value"/>.
         /// </returns>
         protected abstract Value<T> Subtract(Value<T> v2);
-
-        public abstract Value<T> SetValue(int nominator, int denominator);
-
-        public Value<T> Absolute()
-        {
-            if (this > new T())
-            {
-                return this;
-            }
-
-            return this * new T().SetValue(-1, 1);
-        }
     }
 }
