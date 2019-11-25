@@ -12,13 +12,15 @@
 
 #endregion
 
-namespace GaussianElimination.Lib
+namespace GaussianElimination
 {
     #region Usings
 
     using System;
     using System.Collections.Generic;
     using System.Text;
+
+    using GaussianElimination.DataTypes;
 
     #endregion
 
@@ -170,9 +172,12 @@ namespace GaussianElimination.Lib
         ///     The right.
         /// </param>
         /// <returns>
-        /// <see cref="bool"/> true if matrices are equal.
+        ///     <see cref="bool" /> true if matrices are equal.
         /// </returns>
-        public static bool operator ==(MyMatrix<T> left, MyMatrix<T> right) => EqualityComparer<MyMatrix<T>>.Default.Equals(left, right);
+        public static bool operator ==(MyMatrix<T> left, MyMatrix<T> right)
+        {
+            return EqualityComparer<MyMatrix<T>>.Default.Equals(left, right);
+        }
 
         /// <summary>
         ///     The !=.
@@ -184,9 +189,12 @@ namespace GaussianElimination.Lib
         ///     The right.
         /// </param>
         /// <returns>
-        /// <see cref="bool"/> true if matrices are not equal.
+        ///     <see cref="bool" /> true if matrices are not equal.
         /// </returns>
-        public static bool operator !=(MyMatrix<T> left, MyMatrix<T> right) => !(left == right);
+        public static bool operator !=(MyMatrix<T> left, MyMatrix<T> right)
+        {
+            return !(left == right);
+        }
 
         /// <summary>
         ///     The *.
@@ -198,7 +206,7 @@ namespace GaussianElimination.Lib
         ///     The right.
         /// </param>
         /// <returns>
-        /// <see cref="Matrix"/> multiplied matrices.
+        ///     <see cref="Matrix" /> multiplied matrices.
         /// </returns>
         public static MyMatrix<T> operator *(MyMatrix<T> left, MyMatrix<T> right)
         {
@@ -233,10 +241,10 @@ namespace GaussianElimination.Lib
         ///     The right.
         /// </param>
         /// <returns>
-        /// <see cref="Matrix"/> subtracted matrices.
+        ///     <see cref="Matrix" /> subtracted matrices.
         /// </returns>
         /// <exception cref="ArgumentException">
-        /// Thrown when matrices are not equal.
+        ///     Thrown when matrices are not equal.
         /// </exception>
         public static MyMatrix<T> operator -(MyMatrix<T> left, MyMatrix<T> right)
         {
@@ -266,7 +274,10 @@ namespace GaussianElimination.Lib
         /// <returns>
         /// The <see cref="bool"/>.
         /// </returns>
-        public override bool Equals(object obj) => this.Equals(obj as MyMatrix<T>);
+        public override bool Equals(object obj)
+        {
+            return this.Equals(obj as MyMatrix<T>);
+        }
 
         /// <summary>
         /// The equals.
@@ -321,7 +332,10 @@ namespace GaussianElimination.Lib
         /// <returns>
         ///     The <see cref="int" />.
         /// </returns>
-        public override int GetHashCode() => HashCode.Combine(this.Width, this.Height, this.Matrix);
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(this.Width, this.Height, this.Matrix);
+        }
 
         /// <summary>
         /// The relative error.
@@ -361,8 +375,10 @@ namespace GaussianElimination.Lib
         /// </returns>
         public MyMatrix<T> SolveLinearEquation(
             MyMatrix<T> vector,
-            Func<MyMatrix<T>, MyMatrix<T>, MyMatrix<T>> solvingFunc) =>
-            solvingFunc(this, vector);
+            Func<MyMatrix<T>, MyMatrix<T>, MyMatrix<T>> solvingFunc)
+        {
+            return solvingFunc(this, vector);
+        }
 
         /// <summary>
         /// The swap columns.

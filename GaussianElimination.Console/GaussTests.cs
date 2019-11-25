@@ -12,7 +12,7 @@
 
 #endregion
 
-namespace GaussianElimination
+namespace GaussianElimination.Console
 {
     #region Usings
 
@@ -22,7 +22,7 @@ namespace GaussianElimination
     using System.IO;
     using System.Linq;
 
-    using GaussianElimination.Lib;
+    using GaussianElimination.DataTypes;
 
     #endregion
 

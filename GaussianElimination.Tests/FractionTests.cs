@@ -12,11 +12,11 @@
 
 #endregion
 
-namespace GaussianEliminationTests
+namespace GaussianElimination.Tests
 {
     #region Usings
 
-    using GaussianElimination.Lib;
+    using GaussianElimination.DataTypes;
 
     using NUnit.Framework;
 

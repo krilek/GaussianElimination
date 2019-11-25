@@ -1,13 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="MFloatTests.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   The m double tests.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region copyright
+﻿#region copyright
 
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="MFloatTests.cs">
@@ -21,11 +12,11 @@
 
 #endregion
 
-namespace GaussianEliminationTests
+namespace GaussianElimination.Tests
 {
     #region Usings
 
-    using GaussianElimination.Lib;
+    using GaussianElimination.DataTypes;
 
     using NUnit.Framework;
 

@@ -12,12 +12,14 @@
 
 #endregion
 
-namespace GaussianElimination.Lib
+namespace GaussianElimination
 {
     #region Usings
 
     using System;
     using System.Linq;
+
+    using GaussianElimination.DataTypes;
 
     #endregion
 
@@ -38,7 +40,7 @@ namespace GaussianElimination.Lib
         /// <typeparam name="T">
         /// </typeparam>
         /// <returns>
-        /// The <see cref="MyMatrix"/>.
+        /// The <see cref="MyMatrix{T}"/>.
         /// </returns>
         public static MyMatrix<T> FullGauss<T>(MyMatrix<T> matrix, MyMatrix<T> vector)
             where T : Value<T>, new()
