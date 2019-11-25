@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.329
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GaussianElimination", "GaussianElimination\GaussianElimination.csproj", "{4AED736F-2306-41AA-8313-CE62FD53849D}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GaussianElimination.Console", "GaussianElimination.Console\GaussianElimination.Console.csproj", "{59C53AA3-50E8-4285-BBCB-EF56059C1A9D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GaussianElimination.Tests", "GaussianElimination.Tests\GaussianElimination.Tests.csproj", "{F6E0798C-03AB-42F2-8271-06EB11E7A7F4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GaussianElimination", "GaussianElimination\GaussianElimination.csproj", "{1609898D-C429-479C-AE27-307A08A97FBF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,10 +15,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{4AED736F-2306-41AA-8313-CE62FD53849D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4AED736F-2306-41AA-8313-CE62FD53849D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4AED736F-2306-41AA-8313-CE62FD53849D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4AED736F-2306-41AA-8313-CE62FD53849D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{59C53AA3-50E8-4285-BBCB-EF56059C1A9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{59C53AA3-50E8-4285-BBCB-EF56059C1A9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{59C53AA3-50E8-4285-BBCB-EF56059C1A9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -27,6 +23,10 @@ Global
 		{F6E0798C-03AB-42F2-8271-06EB11E7A7F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F6E0798C-03AB-42F2-8271-06EB11E7A7F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F6E0798C-03AB-42F2-8271-06EB11E7A7F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1609898D-C429-479C-AE27-307A08A97FBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1609898D-C429-479C-AE27-307A08A97FBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1609898D-C429-479C-AE27-307A08A97FBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1609898D-C429-479C-AE27-307A08A97FBF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
