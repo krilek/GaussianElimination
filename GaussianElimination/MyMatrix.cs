@@ -89,6 +89,31 @@ namespace GaussianElimination
         public int Height { get; private set; }
 
         /// <summary>
+        /// Gets a value indicating whether is matrix a unit one.
+        /// </summary>
+        public bool IsIdentity
+        {
+            get
+            {
+                if (this.Width != this.Height) return false;
+                Value<T> expectedDiag = new T().SetValue(1);
+                Value<T> other = new T();
+                for (int i = 0; i < this.Height; i++)
+                {
+                    for (int j = 0; j < this.Width; j++)
+                    {
+                        if (i == j && this[i, j] != expectedDiag || i != j && this[i, j] != other)
+                        {
+                            return false;
+                        }
+                    }
+                }
+
+                return true;
+            }
+        }
+
+        /// <summary>
         ///     Gets or sets the matrix.
         /// </summary>
         public Value<T>[,] Matrix
@@ -123,6 +148,27 @@ namespace GaussianElimination
         {
             get => this.Matrix[x, y];
             set => this.Matrix[x, y] = value;
+        }
+
+        /// <summary>
+        /// The generates identity matrix.
+        /// </summary>
+        /// <param name="size">
+        /// The size.
+        /// </param>
+        /// <returns>
+        /// The <see cref="MyMatrix"/>.
+        /// </returns>
+        public static MyMatrix<T> GetIdentityMatrix(int size)
+        {
+            MyMatrix<T> matrix = new MyMatrix<T>(size, size);
+            matrix.FillMatrixWithValue(new T());
+            for (int i = 0; i < size; i++)
+            {
+                matrix[i, i] = new T().SetValue(1);
+            }
+
+            return matrix;
         }
 
         /// <summary>
@@ -440,6 +486,36 @@ namespace GaussianElimination
             }
 
             return sb.ToString();
+        }
+
+        /// <summary>
+        /// The transpose.
+        /// </summary>
+        /// <param name="copy">
+        /// The indicates if values should be deep copied.
+        /// </param>
+        /// <returns>
+        /// The <see cref="MyMatrix"/>.
+        /// </returns>
+        public MyMatrix<T> Transpose(bool copy = true)
+        {
+            MyMatrix<T> transposed = new MyMatrix<T>(this.Height, this.Width);
+            for (int i = 0; i < this.Height; i++)
+            {
+                for (int j = 0; j < this.Width; j++)
+                {
+                    if (copy)
+                    {
+                        transposed[j, i] = this[i, j].Clone();
+                    }
+                    else
+                    {
+                        transposed[j, i] = this[i, j];
+                    }
+                }
+            }
+
+            return transposed;
         }
     }
 }

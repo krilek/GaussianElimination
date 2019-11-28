@@ -18,7 +18,6 @@ namespace GaussianElimination.Tests
 
     using System;
 
-    using GaussianElimination;
     using GaussianElimination.DataTypes;
 
     using NUnit.Framework;
@@ -31,6 +30,91 @@ namespace GaussianElimination.Tests
     [TestFixture]
     public class MatrixTests
     {
+        private static object[] matrixIdentityCases =
+            {
+                new object[]
+                    {
+                        new MyMatrix<MDouble>(
+                            new[,]
+                                {
+                                    { new MDouble().SetValue(1), new MDouble().SetValue(0), new MDouble().SetValue(0) },
+                                    { new MDouble().SetValue(0), new MDouble().SetValue(1), new MDouble().SetValue(0) },
+                                    { new MDouble().SetValue(0), new MDouble().SetValue(0), new MDouble().SetValue(1) }
+                                }),
+                        true
+                    },
+                new object[]
+                    {
+                        new MyMatrix<MDouble>(
+                            new[,]
+                                {
+                                    { new MDouble().SetValue(1), new MDouble().SetValue(0), new MDouble().SetValue(0) },
+                                    { new MDouble().SetValue(0), new MDouble().SetValue(2), new MDouble().SetValue(0) },
+                                    { new MDouble().SetValue(0), new MDouble().SetValue(0), new MDouble().SetValue(1) }
+                                }),
+                        false
+                    },
+                new object[]
+                    {
+                        new MyMatrix<MDouble>(
+                            new[,]
+                                {
+                                    { new MDouble().SetValue(1), new MDouble().SetValue(0), new MDouble().SetValue(0) },
+                                    { new MDouble().SetValue(0), new MDouble().SetValue(1), new MDouble().SetValue(0) },
+                                    { new MDouble().SetValue(0), new MDouble().SetValue(2), new MDouble().SetValue(1) }
+                                }),
+                        false
+                    },
+                new object[]
+                    {
+                        new MyMatrix<MDouble>(
+                            new[,]
+                                {
+                                    { new MDouble().SetValue(1), new MDouble().SetValue(0), new MDouble().SetValue(0) },
+                                    { new MDouble().SetValue(0), new MDouble().SetValue(1), new MDouble().SetValue(0) }
+                                }),
+                        false
+                    },
+                new object[]
+                    {
+                        new MyMatrix<MDouble>(
+                            new[,]
+                                {
+                                    { new MDouble().SetValue(1), new MDouble().SetValue(0) },
+                                    { new MDouble().SetValue(0), new MDouble().SetValue(1) },
+                                    { new MDouble().SetValue(0), new MDouble().SetValue(0) }
+                                }),
+                        false
+                    },
+                new object[]
+                    {
+                        new MyMatrix<MDouble>(
+                            new[,]
+                                {
+                                    {
+                                        new MDouble().SetValue(1), new MDouble().SetValue(0), new MDouble().SetValue(0),
+                                        new MDouble().SetValue(0)
+                                    },
+                                    {
+                                        new MDouble().SetValue(0), new MDouble().SetValue(1), new MDouble().SetValue(0),
+                                        new MDouble().SetValue(0)
+                                    },
+                                    {
+                                        new MDouble().SetValue(0), new MDouble().SetValue(0), new MDouble().SetValue(1),
+                                        new MDouble().SetValue(0)
+                                    },
+                                    {
+                                        new MDouble().SetValue(0), new MDouble().SetValue(0), new MDouble().SetValue(0),
+                                        new MDouble().SetValue(1)
+                                    },
+                                }),
+                        true
+                    },
+                new object[] { MyMatrix<MDouble>.GetIdentityMatrix(5), true },
+                new object[] { MyMatrix<MDouble>.GetIdentityMatrix(50), true },
+                new object[] { MyMatrix<MDouble>.GetRandomMatrix(5, 5), false },
+            };
+
         /// <summary>
         ///     The matrix multiply cases.
         /// </summary>
@@ -163,6 +247,88 @@ namespace GaussianElimination.Tests
                     }
             };
 
+        private static object[] matrixTransposeCases =
+            {
+                new object[]
+                    {
+                        new MyMatrix<MDouble>(
+                            new[,]
+                                {
+                                    {
+                                        new MDouble().SetValue(12), new MDouble().SetValue(7), new MDouble().SetValue(3)
+                                    },
+                                    { new MDouble().SetValue(4), new MDouble().SetValue(5), new MDouble().SetValue(6) },
+                                    { new MDouble().SetValue(7), new MDouble().SetValue(8), new MDouble().SetValue(9) }
+                                }),
+                        new MyMatrix<MDouble>(
+                            new[,]
+                                {
+                                    {
+                                        new MDouble().SetValue(12), new MDouble().SetValue(4), new MDouble().SetValue(7)
+                                    },
+                                    { new MDouble().SetValue(7), new MDouble().SetValue(5), new MDouble().SetValue(8) },
+                                    { new MDouble().SetValue(3), new MDouble().SetValue(6), new MDouble().SetValue(9) }
+                                })
+                    },
+                new object[]
+                    {
+                        new MyMatrix<MDouble>(
+                            new[,]
+                                {
+                                    {
+                                        new MDouble().SetValue(12), new MDouble().SetValue(7), new MDouble().SetValue(3)
+                                    },
+                                    { new MDouble().SetValue(4), new MDouble().SetValue(5), new MDouble().SetValue(6) },
+                                }),
+                        new MyMatrix<MDouble>(
+                            new[,]
+                                {
+                                    { new MDouble().SetValue(12), new MDouble().SetValue(4) },
+                                    { new MDouble().SetValue(7), new MDouble().SetValue(5) },
+                                    { new MDouble().SetValue(3), new MDouble().SetValue(6) }
+                                })
+                    },
+                new object[]
+                    {
+                        new MyMatrix<MDouble>(
+                            new[,]
+                                {
+                                    { new MDouble().SetValue(12), new MDouble().SetValue(7) },
+                                    { new MDouble().SetValue(4), new MDouble().SetValue(5) },
+                                    { new MDouble().SetValue(7), new MDouble().SetValue(8) }
+                                }),
+                        new MyMatrix<MDouble>(
+                            new[,]
+                                {
+                                    {
+                                        new MDouble().SetValue(12), new MDouble().SetValue(4), new MDouble().SetValue(7)
+                                    },
+                                    { new MDouble().SetValue(7), new MDouble().SetValue(5), new MDouble().SetValue(8) },
+                                })
+                    },
+                new object[] { MyMatrix<MDouble>.GetIdentityMatrix(5), MyMatrix<MDouble>.GetIdentityMatrix(5) },
+                new object[]
+                    {
+                        MyMatrix<MDouble>.GetRandomMatrix(10, 10, (int)DateTimeOffset.UtcNow.ToUnixTimeSeconds()),
+                        MyMatrix<MDouble>.GetRandomMatrix(10, 10, (int)DateTimeOffset.UtcNow.ToUnixTimeSeconds())
+                            .Transpose()
+                    },
+            };
+
+        [Test]
+        [TestCaseSource(nameof(matrixIdentityCases))]
+        public void CheckIdentityMatrices(MyMatrix<MDouble> matrix, bool correct)
+        {
+            Assert.AreEqual(matrix.IsIdentity, correct);
+        }
+
+        [Test]
+        [TestCaseSource(nameof(matrixTransposeCases))]
+        public void CheckTransposedMatrices(MyMatrix<MDouble> matrix, MyMatrix<MDouble> transposedMatrix)
+        {
+            Assert.AreEqual(matrix.Transpose(), transposedMatrix);
+        }
+
         [Test]
         [TestCaseSource(nameof(matrixMultiplyCases))]
         public void ClonedMatrixIsEqualTest(MyMatrix<MDouble> a, MyMatrix<MDouble> b, MyMatrix<MDouble> c)
@@ -275,16 +441,16 @@ namespace GaussianElimination.Tests
         }
 
         /// <summary>
-        /// The verify subtract.
+        ///     The verify subtract.
         /// </summary>
         /// <param name="a">
-        /// The a.
+        ///     The a.
         /// </param>
         /// <param name="b">
-        /// The b.
+        ///     The b.
         /// </param>
         /// <param name="res">
-        /// The res.
+        ///     The res.
         /// </param>
         [Test]
         [TestCaseSource(nameof(matrixSubtractCases))]
@@ -300,10 +466,10 @@ namespace GaussianElimination.Tests
         }
 
         /// <summary>
-        /// The verify that random matrix is not null.
+        ///     The verify that random matrix is not null.
         /// </summary>
         /// <param name="size">
-        /// The size.
+        ///     The size.
         /// </param>
         [Test]
         [TestCase(5)]
@@ -326,16 +492,16 @@ namespace GaussianElimination.Tests
         }
 
         /// <summary>
-        /// The verify that subtract throws exception.
+        ///     The verify that subtract throws exception.
         /// </summary>
         /// <param name="a">
-        /// The a.
+        ///     The a.
         /// </param>
         /// <param name="b">
-        /// The b.
+        ///     The b.
         /// </param>
         /// <param name="res">
-        /// The res.
+        ///     The res.
         /// </param>
         [Test]
         [TestCaseSource(nameof(matrixMultiplyCases))]
