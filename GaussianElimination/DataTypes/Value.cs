@@ -116,6 +116,11 @@ namespace GaussianElimination.DataTypes
             return !v1.Equals(v2);
         }
 
+        public static explicit operator Value<T>(double v)
+        {
+            return new T().SetValue(v);
+        }
+
         /// <summary>
         ///     The &lt;.
         /// </summary>
