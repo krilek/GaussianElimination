@@ -188,6 +188,60 @@ namespace GaussianElimination.Tests
                     }
             };
 
+        private static object[] matrixScalarMultiplicationCases =
+            {
+                new object[]
+                    {
+                        new MyMatrix<MDouble>(
+                            new[,]
+                                {
+                                    {
+                                        new MDouble().SetValue(12), new MDouble().SetValue(7), new MDouble().SetValue(3)
+                                    },
+                                    { new MDouble().SetValue(4), new MDouble().SetValue(5), new MDouble().SetValue(6) },
+                                    { new MDouble().SetValue(7), new MDouble().SetValue(8), new MDouble().SetValue(9) }
+                                }),
+                        new MDouble().SetValue(3.0),
+                        new MyMatrix<MDouble>(
+                            new[,]
+                                {
+                                    {
+                                        new MDouble().SetValue(36), new MDouble().SetValue(21),
+                                        new MDouble().SetValue(9)
+                                    },
+                                    {
+                                        new MDouble().SetValue(12), new MDouble().SetValue(15),
+                                        new MDouble().SetValue(18)
+                                    },
+                                    {
+                                        new MDouble().SetValue(21), new MDouble().SetValue(24),
+                                        new MDouble().SetValue(27)
+                                    }
+                                })
+                    },
+                new object[]
+                    {
+                        MyMatrix<MDouble>.GetIdentityMatrix(3),
+                        new MDouble().SetValue(3.0),
+                        new MyMatrix<MDouble>(
+                            new[,]
+                                {
+                                    {
+                                        new MDouble().SetValue(3), new MDouble().SetValue(0),
+                                        new MDouble().SetValue(0)
+                                    },
+                                    {
+                                        new MDouble().SetValue(0), new MDouble().SetValue(3),
+                                        new MDouble().SetValue(0)
+                                    },
+                                    {
+                                        new MDouble().SetValue(0), new MDouble().SetValue(0),
+                                        new MDouble().SetValue(3)
+                                    }
+                                })
+                    }
+            };
+
         /// <summary>
         ///     The matrix subtract cases.
         /// </summary>
@@ -436,6 +490,19 @@ namespace GaussianElimination.Tests
             TestContext.WriteLine(b);
             TestContext.WriteLine("Equals");
             var calculatedResult = a * b;
+            TestContext.WriteLine(calculatedResult);
+            Assert.AreEqual(calculatedResult, res);
+        }
+
+        [Test]
+        [TestCaseSource(nameof(matrixScalarMultiplicationCases))]
+        public void VerifyScalarMultiplication(MyMatrix<MDouble> a, Value<MDouble> scalar, MyMatrix<MDouble> res)
+        {
+            TestContext.WriteLine(a);
+            TestContext.WriteLine("Times");
+            TestContext.WriteLine(scalar);
+            TestContext.WriteLine("Equals");
+            var calculatedResult = a * scalar;
             TestContext.WriteLine(calculatedResult);
             Assert.AreEqual(calculatedResult, res);
         }

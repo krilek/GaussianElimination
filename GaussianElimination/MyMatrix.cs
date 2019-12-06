@@ -89,7 +89,7 @@ namespace GaussianElimination
         public int Height { get; private set; }
 
         /// <summary>
-        /// Gets a value indicating whether is matrix a unit one.
+        ///     Gets a value indicating whether is matrix a unit one.
         /// </summary>
         public bool IsIdentity
         {
@@ -271,6 +271,32 @@ namespace GaussianElimination
                     {
                         result[i, j] += left[i, k] * right[k, j];
                     }
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Karol did not write this method.
+        /// </summary>
+        /// <param name="m">
+        /// Matrix m.
+        /// </param>
+        /// <param name="scalar">
+        /// The scalar.
+        /// </param>
+        /// <returns>
+        /// m multiplied by scalar.
+        /// </returns>
+        public static MyMatrix<T> operator *(MyMatrix<T> m, Value<T> scalar)
+        {
+            var result = new MyMatrix<T>(m.Width, m.Height);
+            for (int i = 0; i < m.Height; i++)
+            {
+                for (int j = 0; j < m.Width; j++)
+                {
+                    result[i, j] = m[i, j] * scalar;
                 }
             }
 
