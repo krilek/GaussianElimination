@@ -1,13 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="FractionTests.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   The fraction tests.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region copyright
+﻿#region copyright
 
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="FractionTests.cs">
@@ -15,17 +6,17 @@
 // krilek@gmail.com
 // </copyright>
 // <summary>
-// 
+// The fraction tests.
 // </summary>
 //  --------------------------------------------------------------------------------------------------------------------
 
 #endregion
 
-namespace GaussianEliminationTests
+namespace GaussianElimination.Tests
 {
     #region Usings
 
-    using GaussianElimination.Lib;
+    using GaussianElimination.DataTypes;
 
     using NUnit.Framework;
 
@@ -136,6 +127,40 @@ namespace GaussianEliminationTests
         }
 
         /// <summary>
+        /// The divide test.
+        /// </summary>
+        /// <param name="an">
+        /// The a nominator.
+        /// </param>
+        /// <param name="ad">
+        /// The a denominator.
+        /// </param>
+        /// <param name="bn">
+        /// The b nominator.
+        /// </param>
+        /// <param name="bd">
+        /// The b denominator.
+        /// </param>
+        /// <param name="rn">
+        /// The result nominator.
+        /// </param>
+        /// <param name="rd">
+        /// The result denominator.
+        /// </param>
+        [Test]
+        [TestCase(1, 2, 1, 5, 5, 2)]
+        [TestCase(-1, 2, -1, 5, 5, 2)]
+        [TestCase(-1, 2, 1, 5, -5, 2)]
+        [TestCase(5, 2, 1, 5, 25, 2)]
+        [TestCase(5, 2, 5, 3, 3, 2)]
+        [TestCase(5, 2, 5, 2, 1, 1)]
+        [TestCase(1, 3, 1, 5, 5, 3)]
+        public void DivideTest(int an, int ad, int bn, int bd, int rn, int rd)
+        {
+            Assert.True(new Fraction(an, ad) / new Fraction(bn, bd) == new Fraction(rn, rd));
+        }
+
+        /// <summary>
         /// The equality test.
         /// </summary>
         /// <param name="a">
@@ -149,6 +174,70 @@ namespace GaussianEliminationTests
         public void EqualityTest(Fraction a, Fraction b)
         {
             Assert.True(a == b);
+        }
+
+        /// <summary>
+        /// The multiply test.
+        /// </summary>
+        /// <param name="an">
+        /// The a nominator.
+        /// </param>
+        /// <param name="ad">
+        /// The a denominator.
+        /// </param>
+        /// <param name="bn">
+        /// The b nominator.
+        /// </param>
+        /// <param name="bd">
+        /// The b denominator.
+        /// </param>
+        /// <param name="rn">
+        /// The result nominator.
+        /// </param>
+        /// <param name="rd">
+        /// The result denominator.
+        /// </param>
+        [Test]
+        [TestCase(1, 2, 1, 5, 1, 10)]
+        [TestCase(-1, 2, -1, 5, 1, 10)]
+        [TestCase(5, 2, 11, 5, 11, 2)]
+        [TestCase(5, 2, 1, 1, 5, 2)]
+        [TestCase(1, 3, 1, 5, 1, 15)]
+        public void MultiplyTest(int an, int ad, int bn, int bd, int rn, int rd)
+        {
+            Assert.True(new Fraction(an, ad) * new Fraction(bn, bd) == new Fraction(rn, rd));
+        }
+
+        /// <summary>
+        /// The subtract test.
+        /// </summary>
+        /// <param name="an">
+        /// The a nominator.
+        /// </param>
+        /// <param name="ad">
+        /// The a denominator.
+        /// </param>
+        /// <param name="bn">
+        /// The b nominator.
+        /// </param>
+        /// <param name="bd">
+        /// The b denominator.
+        /// </param>
+        /// <param name="rn">
+        /// The result nominator.
+        /// </param>
+        /// <param name="rd">
+        /// The result denominator.
+        /// </param>
+        [Test]
+        [TestCase(1, 2, 1, 5, 3, 10)]
+        [TestCase(-1, 2, -1, 5, -3, 10)]
+        [TestCase(5, 2, 1, 5, 23, 10)]
+        [TestCase(5, 2, 5, 2, 0, 1)]
+        [TestCase(1, 3, 1, 5, 2, 15)]
+        public void SubtractTest(int an, int ad, int bn, int bd, int rn, int rd)
+        {
+            Assert.True(new Fraction(an, ad) - new Fraction(bn, bd) == new Fraction(rn, rd));
         }
     }
 }

@@ -12,7 +12,7 @@
 
 #endregion
 
-namespace GaussianElimination.Lib
+namespace GaussianElimination.DataTypes
 {
     #region Usings
 
@@ -253,10 +253,10 @@ namespace GaussianElimination.Lib
         }
 
         /// <summary>
-        /// Fix notation of Fraction to store sign in nominator.
+        ///     Fix notation of Fraction to store sign in nominator.
         /// </summary>
         /// <returns>
-        /// The <see cref="Fraction"/>.
+        ///     The <see cref="Fraction" />.
         /// </returns>
         private Fraction MoveSignToNominator()
         {

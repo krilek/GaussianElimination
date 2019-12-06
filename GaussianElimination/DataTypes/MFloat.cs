@@ -1,62 +1,62 @@
 ﻿#region copyright
 
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="MDouble.cs">
+// <copyright file="MFloat.cs">
 // Karol Gzik 253923 University of Gdańsk Faculty of Mathematics, Physics and Informatics
 // krilek@gmail.com
 // </copyright>
 // <summary>
-//   The double container for generics of matrix calculations.
+//   The float container for generics of matrix calculations
 // </summary>
 //  --------------------------------------------------------------------------------------------------------------------
 
 #endregion
 
-namespace GaussianElimination.Lib
+namespace GaussianElimination.DataTypes
 {
     /// <summary>
-    ///   The double container for generics of matrix calculations
+    ///     The float container for generics of matrix calculations
     /// </summary>
-    public sealed class MDouble : Value<MDouble>
+    public sealed class MFloat : Value<MFloat>
     {
         /// <summary>
-        /// The number of digits after floating point that matter for comparison.
+        ///     The number of digits after floating point that matter for comparison.
         /// </summary>
-        private const int equalityParameter = 5;
+        private const int equalityParameter = 3;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MDouble"/> class.
+        /// Initializes a new instance of the <see cref="MFloat"/> class.
         /// </summary>
         /// <param name="val">
         /// The val.
         /// </param>
-        public MDouble(double val)
+        public MFloat(float val)
         {
             this.Value = val;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MDouble"/> class.
+        ///     Initializes a new instance of the <see cref="MFloat" /> class.
         /// </summary>
-        public MDouble()
+        public MFloat()
             : this(0)
         {
         }
 
         /// <summary>
-        /// Gets the value.
+        ///     Gets the value.
         /// </summary>
-        private double Value { get; }
+        private float Value { get; }
 
         /// <summary>
-        /// The clone.
+        ///     The clone.
         /// </summary>
         /// <returns>
-        /// The <see cref="Value"/>.
+        ///     The <see cref="Value" />.
         /// </returns>
-        public override Value<MDouble> Clone()
+        public override Value<MFloat> Clone()
         {
-            return new MDouble(this.Value);
+            return new MFloat(this.Value);
         }
 
         /// <summary>
@@ -71,16 +71,16 @@ namespace GaussianElimination.Lib
         /// <returns>
         /// The <see cref="Value"/>.
         /// </returns>
-        public override Value<MDouble> SetValue(double nominator, double denominator)
+        public override Value<MFloat> SetValue(double nominator, double denominator)
         {
-            return new MDouble(nominator / denominator);
+            return new MFloat(((float)nominator) / ((float)denominator));
         }
 
         /// <summary>
-        /// The to string.
+        ///     The to string.
         /// </summary>
         /// <returns>
-        /// The <see cref="string"/>.
+        ///     The <see cref="string" />.
         /// </returns>
         public override string ToString()
         {
@@ -96,9 +96,9 @@ namespace GaussianElimination.Lib
         /// <returns>
         /// The <see cref="Value"/>.
         /// </returns>
-        protected override Value<MDouble> Add(Value<MDouble> v2)
+        protected override Value<MFloat> Add(Value<MFloat> v2)
         {
-            return new MDouble(this.Value + ((MDouble)v2).Value);
+            return new MFloat(this.Value + ((MFloat)v2).Value);
         }
 
         /// <summary>
@@ -110,9 +110,9 @@ namespace GaussianElimination.Lib
         /// <returns>
         /// The <see cref="int"/>.
         /// </returns>
-        protected override int Compare(Value<MDouble> v2)
+        protected override int Compare(Value<MFloat> v2)
         {
-            return this.Value.CompareTo(((MDouble)v2).Value);
+            return this.Value.CompareTo(((MFloat)v2).Value);
         }
 
         /// <summary>
@@ -124,9 +124,9 @@ namespace GaussianElimination.Lib
         /// <returns>
         /// The <see cref="Value"/>.
         /// </returns>
-        protected override Value<MDouble> Divide(Value<MDouble> v2)
+        protected override Value<MFloat> Divide(Value<MFloat> v2)
         {
-            return new MDouble(this.Value / ((MDouble)v2).Value);
+            return new MFloat(this.Value / ((MFloat)v2).Value);
         }
 
         /// <summary>
@@ -138,12 +138,13 @@ namespace GaussianElimination.Lib
         /// <returns>
         /// The <see cref="bool"/>.
         /// </returns>
-        protected override bool Equals(Value<MDouble> v2)
+        protected override bool Equals(Value<MFloat> v2)
         {
             if (ReferenceEquals(null, v2)) return false;
             if (ReferenceEquals(this, v2)) return true;
+
             return System.Math.Round(this.Value, equalityParameter)
-                   == System.Math.Round(((MDouble)v2).Value, equalityParameter);
+                   == System.Math.Round(((MFloat)v2).Value, equalityParameter);
         }
 
         /// <summary>
@@ -155,9 +156,9 @@ namespace GaussianElimination.Lib
         /// <returns>
         /// The <see cref="Value"/>.
         /// </returns>
-        protected override Value<MDouble> Multiply(Value<MDouble> v2)
+        protected override Value<MFloat> Multiply(Value<MFloat> v2)
         {
-            return new MDouble(this.Value * ((MDouble)v2).Value);
+            return new MFloat(this.Value * ((MFloat)v2).Value);
         }
 
         /// <summary>
@@ -169,9 +170,9 @@ namespace GaussianElimination.Lib
         /// <returns>
         /// The <see cref="Value"/>.
         /// </returns>
-        protected override Value<MDouble> Subtract(Value<MDouble> v2)
+        protected override Value<MFloat> Subtract(Value<MFloat> v2)
         {
-            return new MDouble(this.Value - ((MDouble)v2).Value);
+            return new MFloat(this.Value - ((MFloat)v2).Value);
         }
     }
 }

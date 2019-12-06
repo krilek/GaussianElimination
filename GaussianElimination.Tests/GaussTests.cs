@@ -1,13 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="GaussTests.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   The gauss tests.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region copyright
+﻿#region copyright
 
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="GaussTests.cs">
@@ -21,11 +12,12 @@
 
 #endregion
 
-namespace GaussianEliminationTests
+namespace GaussianElimination.Tests
 {
     #region Usings
 
-    using GaussianElimination.Lib;
+    using GaussianElimination;
+    using GaussianElimination.DataTypes;
 
     using NUnit.Framework;
 

@@ -12,13 +12,13 @@
 
 #endregion
 
-namespace GaussianElimination
+namespace GaussianElimination.Console
 {
     #region Usings
 
     using System;
 
-    using GaussianElimination.Lib;
+    using GaussianElimination.DataTypes;
 
     #endregion
 

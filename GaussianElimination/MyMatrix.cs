@@ -12,13 +12,15 @@
 
 #endregion
 
-namespace GaussianElimination.Lib
+namespace GaussianElimination
 {
     #region Usings
 
     using System;
     using System.Collections.Generic;
     using System.Text;
+
+    using GaussianElimination.DataTypes;
 
     #endregion
 
@@ -49,7 +51,7 @@ namespace GaussianElimination.Lib
         {
             this.Width = width;
             this.Height = height;
-            this.Matrix = new Value<T>[this.Height, this.Width];
+            this.Matrix = new Value<T>[height, width];
         }
 
         /// <summary>
@@ -84,7 +86,32 @@ namespace GaussianElimination.Lib
         /// <summary>
         ///     Gets the height.
         /// </summary>
-        public int Height { get; private set; }
+        public virtual int Height { get; private set; }
+
+        /// <summary>
+        ///     Gets a value indicating whether is matrix a unit one.
+        /// </summary>
+        public bool IsIdentity
+        {
+            get
+            {
+                if (this.Width != this.Height) return false;
+                Value<T> expectedDiag = new T().SetValue(1);
+                Value<T> other = new T();
+                for (int i = 0; i < this.Height; i++)
+                {
+                    for (int j = 0; j < this.Width; j++)
+                    {
+                        if (i == j && this[i, j] != expectedDiag || i != j && this[i, j] != other)
+                        {
+                            return false;
+                        }
+                    }
+                }
+
+                return true;
+            }
+        }
 
         /// <summary>
         ///     Gets or sets the matrix.
@@ -103,7 +130,7 @@ namespace GaussianElimination.Lib
         /// <summary>
         ///     Gets the width.
         /// </summary>
-        public int Width { get; private set; }
+        public virtual int Width { get; private set; }
 
         /// <summary>
         /// Simplified indexing
@@ -117,10 +144,31 @@ namespace GaussianElimination.Lib
         /// <returns>
         /// The <see cref="Value"/>.
         /// </returns>
-        public Value<T> this[int x, int y]
+        public virtual Value<T> this[int x, int y]
         {
             get => this.Matrix[x, y];
             set => this.Matrix[x, y] = value;
+        }
+
+        /// <summary>
+        /// The generates identity matrix.
+        /// </summary>
+        /// <param name="size">
+        /// The size.
+        /// </param>
+        /// <returns>
+        /// The <see cref="MyMatrix"/>.
+        /// </returns>
+        public static MyMatrix<T> GetIdentityMatrix(int size)
+        {
+            MyMatrix<T> matrix = new MyMatrix<T>(size, size);
+            matrix.FillMatrixWithValue(new T());
+            for (int i = 0; i < size; i++)
+            {
+                matrix[i, i] = new T().SetValue(1);
+            }
+
+            return matrix;
         }
 
         /// <summary>
@@ -170,9 +218,12 @@ namespace GaussianElimination.Lib
         ///     The right.
         /// </param>
         /// <returns>
-        /// <see cref="bool"/> true if matrices are equal.
+        ///     <see cref="bool" /> true if matrices are equal.
         /// </returns>
-        public static bool operator ==(MyMatrix<T> left, MyMatrix<T> right) => EqualityComparer<MyMatrix<T>>.Default.Equals(left, right);
+        public static bool operator ==(MyMatrix<T> left, MyMatrix<T> right)
+        {
+            return EqualityComparer<MyMatrix<T>>.Default.Equals(left, right);
+        }
 
         /// <summary>
         ///     The !=.
@@ -184,9 +235,12 @@ namespace GaussianElimination.Lib
         ///     The right.
         /// </param>
         /// <returns>
-        /// <see cref="bool"/> true if matrices are not equal.
+        ///     <see cref="bool" /> true if matrices are not equal.
         /// </returns>
-        public static bool operator !=(MyMatrix<T> left, MyMatrix<T> right) => !(left == right);
+        public static bool operator !=(MyMatrix<T> left, MyMatrix<T> right)
+        {
+            return !(left == right);
+        }
 
         /// <summary>
         ///     The *.
@@ -198,7 +252,7 @@ namespace GaussianElimination.Lib
         ///     The right.
         /// </param>
         /// <returns>
-        /// <see cref="Matrix"/> multiplied matrices.
+        ///     <see cref="Matrix" /> multiplied matrices.
         /// </returns>
         public static MyMatrix<T> operator *(MyMatrix<T> left, MyMatrix<T> right)
         {
@@ -224,6 +278,32 @@ namespace GaussianElimination.Lib
         }
 
         /// <summary>
+        /// Karol did not write this method.
+        /// </summary>
+        /// <param name="m">
+        /// Matrix m.
+        /// </param>
+        /// <param name="scalar">
+        /// The scalar.
+        /// </param>
+        /// <returns>
+        /// m multiplied by scalar.
+        /// </returns>
+        public static MyMatrix<T> operator *(MyMatrix<T> m, Value<T> scalar)
+        {
+            var result = new MyMatrix<T>(m.Width, m.Height);
+            for (int i = 0; i < m.Height; i++)
+            {
+                for (int j = 0; j < m.Width; j++)
+                {
+                    result[i, j] = m[i, j] * scalar;
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
         ///     The -.
         /// </summary>
         /// <param name="left">
@@ -233,10 +313,10 @@ namespace GaussianElimination.Lib
         ///     The right.
         /// </param>
         /// <returns>
-        /// <see cref="Matrix"/> subtracted matrices.
+        ///     <see cref="Matrix" /> subtracted matrices.
         /// </returns>
         /// <exception cref="ArgumentException">
-        /// Thrown when matrices are not equal.
+        ///     Thrown when matrices are not equal.
         /// </exception>
         public static MyMatrix<T> operator -(MyMatrix<T> left, MyMatrix<T> right)
         {
@@ -266,7 +346,10 @@ namespace GaussianElimination.Lib
         /// <returns>
         /// The <see cref="bool"/>.
         /// </returns>
-        public override bool Equals(object obj) => this.Equals(obj as MyMatrix<T>);
+        public override bool Equals(object obj)
+        {
+            return this.Equals(obj as MyMatrix<T>);
+        }
 
         /// <summary>
         /// The equals.
@@ -321,7 +404,10 @@ namespace GaussianElimination.Lib
         /// <returns>
         ///     The <see cref="int" />.
         /// </returns>
-        public override int GetHashCode() => HashCode.Combine(this.Width, this.Height, this.Matrix);
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(this.Width, this.Height, this.Matrix);
+        }
 
         /// <summary>
         /// The relative error.
@@ -361,8 +447,10 @@ namespace GaussianElimination.Lib
         /// </returns>
         public MyMatrix<T> SolveLinearEquation(
             MyMatrix<T> vector,
-            Func<MyMatrix<T>, MyMatrix<T>, MyMatrix<T>> solvingFunc) =>
-            solvingFunc(this, vector);
+            Func<MyMatrix<T>, MyMatrix<T>, MyMatrix<T>> solvingFunc)
+        {
+            return solvingFunc(this, vector);
+        }
 
         /// <summary>
         /// The swap columns.
@@ -424,6 +512,36 @@ namespace GaussianElimination.Lib
             }
 
             return sb.ToString();
+        }
+
+        /// <summary>
+        /// The transpose.
+        /// </summary>
+        /// <param name="copy">
+        /// The indicates if values should be deep copied.
+        /// </param>
+        /// <returns>
+        /// The <see cref="MyMatrix"/>.
+        /// </returns>
+        public MyMatrix<T> Transpose(bool copy = true)
+        {
+            MyMatrix<T> transposed = new MyMatrix<T>(this.Height, this.Width);
+            for (int i = 0; i < this.Height; i++)
+            {
+                for (int j = 0; j < this.Width; j++)
+                {
+                    if (copy)
+                    {
+                        transposed[j, i] = this[i, j].Clone();
+                    }
+                    else
+                    {
+                        transposed[j, i] = this[i, j];
+                    }
+                }
+            }
+
+            return transposed;
         }
     }
 }

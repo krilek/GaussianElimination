@@ -12,7 +12,7 @@
 
 #endregion
 
-namespace GaussianElimination.Lib
+namespace GaussianElimination.DataTypes
 {
     /// <summary>
     /// The value container.
@@ -33,7 +33,7 @@ namespace GaussianElimination.Lib
         ///     The v 2.
         /// </param>
         /// <returns>
-        /// Added value
+        ///     Added value
         /// </returns>
         public static Value<T> operator +(Value<T> v1, Value<T> v2)
         {
@@ -50,7 +50,7 @@ namespace GaussianElimination.Lib
         ///     The v 2.
         /// </param>
         /// <returns>
-        /// Divided value
+        ///     Divided value
         /// </returns>
         public static Value<T> operator /(Value<T> v1, Value<T> v2)
         {
@@ -67,7 +67,7 @@ namespace GaussianElimination.Lib
         ///     The v 2.
         /// </param>
         /// <returns>
-        /// True if equal
+        ///     True if equal
         /// </returns>
         public static bool operator ==(Value<T> v1, Value<T> v2)
         {
@@ -84,7 +84,11 @@ namespace GaussianElimination.Lib
         ///     The v 2.
         /// </param>
         /// <returns>
-        /// True if <param name="v1"></param> bigger than <param name="v2"></param>.
+        ///     True if
+        ///     <param name="v1"></param>
+        ///     bigger than
+        ///     <param name="v2"></param>
+        ///     .
         /// </returns>
         public static bool operator >(Value<T> v1, Value<T> v2)
         {
@@ -101,11 +105,20 @@ namespace GaussianElimination.Lib
         ///     The v 2.
         /// </param>
         /// <returns>
-        /// True if <param name="v1"></param> not equal equal <param name="v2"></param>.
+        ///     True if
+        ///     <param name="v1"></param>
+        ///     not equal equal
+        ///     <param name="v2"></param>
+        ///     .
         /// </returns>
         public static bool operator !=(Value<T> v1, Value<T> v2)
         {
             return !v1.Equals(v2);
+        }
+
+        public static explicit operator Value<T>(double v)
+        {
+            return new T().SetValue(v);
         }
 
         /// <summary>
@@ -118,7 +131,11 @@ namespace GaussianElimination.Lib
         ///     The v 2.
         /// </param>
         /// <returns>
-        /// True if <param name="v1"></param> smaller than <param name="v2"></param>.
+        ///     True if
+        ///     <param name="v1"></param>
+        ///     smaller than
+        ///     <param name="v2"></param>
+        ///     .
         /// </returns>
         public static bool operator <(Value<T> v1, Value<T> v2)
         {
@@ -135,7 +152,7 @@ namespace GaussianElimination.Lib
         ///     The v 2.
         /// </param>
         /// <returns>
-        /// Multiplied value
+        ///     Multiplied value
         /// </returns>
         public static Value<T> operator *(Value<T> v1, Value<T> v2)
         {
@@ -152,7 +169,7 @@ namespace GaussianElimination.Lib
         ///     The v 2.
         /// </param>
         /// <returns>
-        /// Subtracted value
+        ///     Subtracted value
         /// </returns>
         public static Value<T> operator -(Value<T> v1, Value<T> v2)
         {
@@ -160,10 +177,10 @@ namespace GaussianElimination.Lib
         }
 
         /// <summary>
-        /// Return change given value to absolute.
+        ///     Return change given value to absolute.
         /// </summary>
         /// <returns>
-        /// The <see cref="Value"/>.
+        ///     The <see cref="Value" />.
         /// </returns>
         public Value<T> Absolute()
         {
