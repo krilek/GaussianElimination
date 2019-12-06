@@ -51,7 +51,7 @@ namespace GaussianElimination
         {
             this.Width = width;
             this.Height = height;
-            this.Matrix = new Value<T>[this.Height, this.Width];
+            this.Matrix = new Value<T>[height, width];
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace GaussianElimination
         /// <summary>
         ///     Gets the height.
         /// </summary>
-        public int Height { get; private set; }
+        public virtual int Height { get; private set; }
 
         /// <summary>
         ///     Gets a value indicating whether is matrix a unit one.
@@ -130,7 +130,7 @@ namespace GaussianElimination
         /// <summary>
         ///     Gets the width.
         /// </summary>
-        public int Width { get; private set; }
+        public virtual int Width { get; private set; }
 
         /// <summary>
         /// Simplified indexing
@@ -144,7 +144,7 @@ namespace GaussianElimination
         /// <returns>
         /// The <see cref="Value"/>.
         /// </returns>
-        public Value<T> this[int x, int y]
+        public virtual Value<T> this[int x, int y]
         {
             get => this.Matrix[x, y];
             set => this.Matrix[x, y] = value;
