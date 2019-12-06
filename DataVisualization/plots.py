@@ -47,15 +47,13 @@ class Visualizer:
             plt.title(f"{self.algorithms[alg]} - {title}")
             plt.show()
 
-    # czas, n = 500 , typ zmiennych, typ metody
-
 
 def graph_e():
     data = [[15048, 15480, 55152],
             [908, 1008, 5],
             [21077762, 21482524, 35846720]]
 
-    columns = ('Gauss', 'Partial Gauss', 'Full Gauss')
+    columns = ['Gauss', 'Partial Gauss', 'Full Gauss']
     rows = ['fraction', 'double', 'float']
 
     values = np.arange(0, 40000, 500)
@@ -89,5 +87,5 @@ if __name__ == "__main__":
     task3 = Visualizer()
     # task3.graph("n", "time", "running time")
     # task3.graph("n", "error", "accuracy")
-    task3.graph_2nd("n", "time", "running time")
+    # task3.graph_2nd("n", "time", "running time")
     # graph_e()
