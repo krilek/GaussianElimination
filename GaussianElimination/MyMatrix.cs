@@ -135,19 +135,19 @@ namespace GaussianElimination
         /// <summary>
         /// Simplified indexing
         /// </summary>
-        /// <param name="x">
-        /// The x.
-        /// </param>
         /// <param name="y">
         /// The y.
+        /// </param>
+        /// <param name="x">
+        /// The x.
         /// </param>
         /// <returns>
         /// The <see cref="Value"/>.
         /// </returns>
-        public virtual Value<T> this[int x, int y]
+        public virtual Value<T> this[int y, int x]
         {
-            get => this.Matrix[x, y];
-            set => this.Matrix[x, y] = value;
+            get => this.Matrix[y, x];
+            set => this.Matrix[y, x] = value;
         }
 
         /// <summary>
@@ -530,18 +530,61 @@ namespace GaussianElimination
             {
                 for (int j = 0; j < this.Width; j++)
                 {
-                    if (copy)
-                    {
-                        transposed[j, i] = this[i, j].Clone();
-                    }
-                    else
-                    {
-                        transposed[j, i] = this[i, j];
-                    }
+                    transposed[j, i] = copy ? this[i, j].Clone() : this[i, j];
                 }
             }
 
             return transposed;
+        }
+
+        /// <summary>
+        /// Get nth row of matrix
+        /// </summary>
+        /// <param name="n">
+        /// The n.
+        /// </param>
+        /// <param name="copy">
+        /// The copy.
+        /// </param>
+        /// <returns>
+        /// The <see cref="MyMatrix"/>.
+        /// </returns>
+        public MyMatrix<T> GetRow(int n, bool copy = true)
+        {
+            MyMatrix<T> vector = new MyMatrix<T>(1, this.Width);
+            for (int i = 0; i < this.Width; i++)
+            {
+                vector[i, 0] = copy ? this[n, i].Clone() : this[n, i];
+            }
+
+            return vector;
+            //TODO: In future?:
+            //szer*n+i
+            //Column
+            //szer*i+n
+        }
+
+        /// <summary>
+        /// Get nth column of matrix.
+        /// </summary>
+        /// <param name="n">
+        /// The n.
+        /// </param>
+        /// <param name="copy">
+        /// The copy.
+        /// </param>
+        /// <returns>
+        /// The <see cref="MyMatrix"/>.
+        /// </returns>
+        public MyMatrix<T> GetColumn(int n, bool copy = true)
+        {
+            MyMatrix<T> vector = new MyMatrix<T>(1, this.Height);
+            for (int i = 0; i < this.Height; i++)
+            {
+                vector[i, 0] = copy ? this[i, n].Clone() : this[i, n];
+            }
+
+            return vector;
         }
     }
 }

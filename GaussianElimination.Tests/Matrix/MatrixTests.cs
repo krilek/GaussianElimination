@@ -369,6 +369,8 @@ namespace GaussianElimination.Tests
                     },
             };
 
+
+
         [Test]
         [TestCaseSource(nameof(matrixIdentityCases))]
         public void CheckIdentityMatrices(MyMatrix<MDouble> matrix, bool correct)
@@ -585,5 +587,20 @@ namespace GaussianElimination.Tests
                         var x = a - b;
                     });
         }
+
+
+        [Test]
+        [TestCaseSource(nameof(matrixTransposeCases))]
+        public void CheckVectorGetting(MyMatrix<MDouble> matrix, MyMatrix<MDouble> transposedMatrix)
+        {
+            TestContext.WriteLine($"Seed:{Guid.NewGuid()}");
+            Random r = new Random();
+            int rand = r.Next();
+            TestContext.WriteLine($"Rnd:{rand}");
+            var expected = transposedMatrix.GetRow(rand % transposedMatrix.Height);
+            var acctual = matrix.GetColumn(rand % matrix.Width);
+            Assert.AreEqual(expected, acctual);
+        }
+
     }
 }

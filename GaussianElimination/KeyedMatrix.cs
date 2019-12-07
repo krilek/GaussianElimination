@@ -138,33 +138,41 @@ namespace GaussianElimination
                 seed = Guid.NewGuid().GetHashCode();
             }
 
-            if (method == NormalizedMethod.NormalizeColumns)
+            switch (method)
             {
-                for (var j = 0; j < keyedMatrix.Width; j++)
-                {
-                    Value<TVal>[] randomNormalizedArray = ValueUtilities<TVal>
-                        .RandomNormalizedArray(keyedMatrix.Height, new TVal().SetValue(1), seed).ToArray();
-                    for (var i = 0; i < keyedMatrix.Height; i++)
+                // TODO: PLIS REFACTOR ME!
+                case NormalizedMethod.NormalizeColumns:
                     {
-                        keyedMatrix.Matrix[i, j] = randomNormalizedArray[i];
+                        for (var j = 0; j < keyedMatrix.Width; j++)
+                        {
+                            Value<TVal>[] randomNormalizedArray = ValueUtilities<TVal>
+                                .RandomNormalizedArray(keyedMatrix.Height, new TVal().SetValue(1), seed).ToArray(); // TODO: FIX ME PLIS, GETTING ALL THE SAME VALUES
+                            for (var i = 0; i < keyedMatrix.Height; i++)
+                            {
+                                keyedMatrix.Matrix[i, j] = randomNormalizedArray[i];
+                            }
+                        }
+
+                        break;
                     }
-                }
-            }
-            else if (method == NormalizedMethod.NormalizeRow)
-            {
-                for (var j = 0; j < keyedMatrix.Height; j++)
-                {
-                    Value<TVal>[] randomNormalizedArray = ValueUtilities<TVal>
-                        .RandomNormalizedArray(keyedMatrix.Width, new TVal().SetValue(1), seed).ToArray();
-                    for (var i = 0; i < keyedMatrix.Width; i++)
+
+                case NormalizedMethod.NormalizeRow:
                     {
-                        keyedMatrix.Matrix[j, i] = randomNormalizedArray[i];
+                        for (var j = 0; j < keyedMatrix.Height; j++)
+                        {
+                            Value<TVal>[] randomNormalizedArray = ValueUtilities<TVal>
+                                .RandomNormalizedArray(keyedMatrix.Width, new TVal().SetValue(1), seed).ToArray();
+                            for (var i = 0; i < keyedMatrix.Width; i++)
+                            {
+                                keyedMatrix.Matrix[j, i] = randomNormalizedArray[i];
+                            }
+                        }
+
+                        break;
                     }
-                }
-            }
-            else
-            {
-                throw new ArgumentException("What?");
+
+                default:
+                    throw new ArgumentException("What?");
             }
 
             return keyedMatrix;

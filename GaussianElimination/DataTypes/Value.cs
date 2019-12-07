@@ -116,6 +116,14 @@ namespace GaussianElimination.DataTypes
             return !v1.Equals(v2);
         }
 
+        /// <summary>
+        /// The explicit casting to MDouble.
+        /// </summary>
+        /// <param name="v">
+        /// The v.
+        /// </param>
+        /// <returns>
+        /// </returns>
         public static explicit operator Value<T>(double v)
         {
             return new T().SetValue(v);
