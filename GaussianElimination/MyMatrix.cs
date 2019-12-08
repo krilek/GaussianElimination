@@ -144,7 +144,7 @@ namespace GaussianElimination
         /// <returns>
         /// The <see cref="Value"/>.
         /// </returns>
-        public virtual Value<T> this[int y, int x]
+        public Value<T> this[int y, int x]
         {
             get => this.Matrix[y, x];
             set => this.Matrix[y, x] = value;
@@ -289,14 +289,38 @@ namespace GaussianElimination
         /// <returns>
         /// m multiplied by scalar.
         /// </returns>
-        public static MyMatrix<T> operator *(MyMatrix<T> m, Value<T> scalar)
+        public static MyMatrix<T> operator *(MyMatrix<T> b, Value<T> scalar)
         {
-            var result = new MyMatrix<T>(m.Width, m.Height);
-            for (int i = 0; i < m.Height; i++)
+            return b.MultiplyByScalar(scalar);
+        }
+
+        protected virtual MyMatrix<T> MultiplyByScalar(Value<T> scalar)
+        {
+            var result = new MyMatrix<T>(this.Width, this.Height);
+            for (int i = 0; i < this.Height; i++)
             {
-                for (int j = 0; j < m.Width; j++)
+                for (int j = 0; j < this.Width; j++)
                 {
-                    result[i, j] = m[i, j] * scalar;
+                    result[i, j] = this[i, j] * scalar;
+                }
+            }
+
+            return result;
+        }
+
+        public static MyMatrix<T> operator +(MyMatrix<T> a, MyMatrix<T> b)
+        {
+            return a.Add(b);
+        }
+
+        protected virtual MyMatrix<T> Add(MyMatrix<T> second)
+        {
+            var result = new MyMatrix<T>(this.Width, this.Height);
+            for (int i = 0; i < this.Height; i++)
+            {
+                for (int j = 0; j < this.Width; j++)
+                {
+                    result[i, j] = this[i, j] + second[i, j];
                 }
             }
 
