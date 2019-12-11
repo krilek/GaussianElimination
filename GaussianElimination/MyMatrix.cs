@@ -610,5 +610,28 @@ namespace GaussianElimination
 
             return vector;
         }
+
+
+        public Value<T> SquaredNorm()
+        {
+            var vector = this;
+            Value<T> result = new T();
+            if (vector.Width != 1 || vector.Height != 1)
+            {
+                throw new Exception("Squared norm works only for vectors");
+            }
+
+            if (vector.Width != 1)
+            {
+                vector = vector.Transpose();
+            }
+
+            for (var i = 0; i < vector.Height; i++)
+            {
+                result += vector[i, 0] * vector[i, 0];
+            }
+            
+            return result;
+        }
     }
 }
