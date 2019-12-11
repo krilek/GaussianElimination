@@ -82,7 +82,7 @@ namespace GaussianElimination
         public KeyedMatrix(KeyedMatrix<TRowKey, TColKey, TVal> matrix)
             : base(matrix)
         {
-            // This should implement in some way copying of lists BUT HOW THE FUCK CLONE INT.
+            // This should implement in some way copying of lists BUT HOW THE HELL CLONE INT.
             //this.RowsKeys = typeof(TRowKey).IsValueType ? new List<TRowKey>(matrix.RowsKeys) : matrix.RowsKeys.ConvertAll(x => (TRowKey)x.Clone()).ToList();
             ////this.RowsKeys = matrix.RowsKeys.Select(x => (THeightKey)x.Clone()).ToList();
             // this.ColumnsKeys = matrix.ColumnsKeys.Select(x => (TWidthKey)x.Clone()).ToList();
@@ -196,6 +196,7 @@ namespace GaussianElimination
             {
                 seed = Guid.NewGuid().GetHashCode();
             }
+            Random r = new Random(seed.Value);
 
             switch (method)
             {
@@ -205,7 +206,7 @@ namespace GaussianElimination
                         for (var j = 0; j < keyedMatrix.Width; j++)
                         {
                             Value<TVal>[] randomNormalizedArray = ValueUtilities<TVal>
-                                .RandomNormalizedArray(keyedMatrix.Height, new TVal().SetValue(1), seed).ToArray(); // TODO: FIX ME PLIS, GETTING ALL THE SAME VALUES
+                                .RandomNormalizedArray(keyedMatrix.Height, new TVal().SetValue(1), r.Next()).ToArray(); // TODO: FIX ME PLIS, GETTING ALL THE SAME VALUES
                             for (var i = 0; i < keyedMatrix.Height; i++)
                             {
                                 keyedMatrix.Matrix[i, j] = randomNormalizedArray[i];
@@ -220,7 +221,7 @@ namespace GaussianElimination
                         for (var j = 0; j < keyedMatrix.Height; j++)
                         {
                             Value<TVal>[] randomNormalizedArray = ValueUtilities<TVal>
-                                .RandomNormalizedArray(keyedMatrix.Width, new TVal().SetValue(1), seed).ToArray();
+                                .RandomNormalizedArray(keyedMatrix.Width, new TVal().SetValue(1), r.Next()).ToArray();
                             for (var i = 0; i < keyedMatrix.Width; i++)
                             {
                                 keyedMatrix.Matrix[j, i] = randomNormalizedArray[i];
@@ -237,7 +238,10 @@ namespace GaussianElimination
             return keyedMatrix;
         }
 
-
+        public void SetRow(TRowKey rowKey, MyMatrix<TVal> values)
+        {
+            base.SetRow(this.RowsKeys.IndexOf(rowKey), values);
+        }
     }
 
     /// <summary>

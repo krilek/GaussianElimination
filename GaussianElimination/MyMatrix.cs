@@ -209,6 +209,22 @@ namespace GaussianElimination
         }
 
         /// <summary>
+        /// The +.
+        /// </summary>
+        /// <param name="a">
+        /// The a.
+        /// </param>
+        /// <param name="b">
+        /// The b.
+        /// </param>
+        /// <returns>
+        /// </returns>
+        public static MyMatrix<T> operator +(MyMatrix<T> a, MyMatrix<T> b)
+        {
+            return a.Add(b);
+        }
+
+        /// <summary>
         ///     The ==.
         /// </summary>
         /// <param name="left">
@@ -278,53 +294,20 @@ namespace GaussianElimination
         }
 
         /// <summary>
-        /// Karol did not write this method.
+        ///     Karol did not write this method.
         /// </summary>
         /// <param name="m">
-        /// Matrix m.
+        ///     Matrix m.
         /// </param>
         /// <param name="scalar">
-        /// The scalar.
+        ///     The scalar.
         /// </param>
         /// <returns>
-        /// m multiplied by scalar.
+        ///     m multiplied by scalar.
         /// </returns>
         public static MyMatrix<T> operator *(MyMatrix<T> b, Value<T> scalar)
         {
             return b.MultiplyByScalar(scalar);
-        }
-
-        protected virtual MyMatrix<T> MultiplyByScalar(Value<T> scalar)
-        {
-            var result = new MyMatrix<T>(this.Width, this.Height);
-            for (int i = 0; i < this.Height; i++)
-            {
-                for (int j = 0; j < this.Width; j++)
-                {
-                    result[i, j] = this[i, j] * scalar;
-                }
-            }
-
-            return result;
-        }
-
-        public static MyMatrix<T> operator +(MyMatrix<T> a, MyMatrix<T> b)
-        {
-            return a.Add(b);
-        }
-
-        protected virtual MyMatrix<T> Add(MyMatrix<T> second)
-        {
-            var result = new MyMatrix<T>(this.Width, this.Height);
-            for (int i = 0; i < this.Height; i++)
-            {
-                for (int j = 0; j < this.Width; j++)
-                {
-                    result[i, j] = this[i, j] + second[i, j];
-                }
-            }
-
-            return result;
         }
 
         /// <summary>
@@ -423,6 +406,29 @@ namespace GaussianElimination
         }
 
         /// <summary>
+        /// Get nth column of matrix.
+        /// </summary>
+        /// <param name="n">
+        /// The n.
+        /// </param>
+        /// <param name="copy">
+        /// The copy.
+        /// </param>
+        /// <returns>
+        /// The <see cref="MyMatrix"/>.
+        /// </returns>
+        public MyMatrix<T> GetColumn(int n, bool copy = true)
+        {
+            MyMatrix<T> vector = new MyMatrix<T>(1, this.Height);
+            for (int i = 0; i < this.Height; i++)
+            {
+                vector[i, 0] = copy ? this[i, n].Clone() : this[i, n];
+            }
+
+            return vector;
+        }
+
+        /// <summary>
         ///     The get hash code.
         /// </summary>
         /// <returns>
@@ -431,6 +437,34 @@ namespace GaussianElimination
         public override int GetHashCode()
         {
             return HashCode.Combine(this.Width, this.Height, this.Matrix);
+        }
+
+        /// <summary>
+        /// Get nth row of matrix
+        /// </summary>
+        /// <param name="n">
+        /// The n.
+        /// </param>
+        /// <param name="copy">
+        /// The copy.
+        /// </param>
+        /// <returns>
+        /// The <see cref="MyMatrix"/>.
+        /// </returns>
+        public MyMatrix<T> GetRow(int n, bool copy = true)
+        {
+            MyMatrix<T> vector = new MyMatrix<T>(1, this.Width);
+            for (int i = 0; i < this.Width; i++)
+            {
+                vector[i, 0] = copy ? this[n, i].Clone() : this[n, i];
+            }
+
+            return vector;
+
+            // TODO: In future?:
+            // szer*n+i
+            // Column
+            // szer*i+n
         }
 
         /// <summary>
@@ -458,6 +492,35 @@ namespace GaussianElimination
         }
 
         /// <summary>
+        /// The set row.
+        /// </summary>
+        /// <param name="n">
+        /// The n.
+        /// </param>
+        /// <param name="vector">
+        /// The vector.
+        /// </param>
+        /// <exception cref="ArgumentException">
+        /// </exception>
+        public void SetRow(int n, MyMatrix<T> vector)
+        {
+            if (!(vector.Height == 1 || vector.Width == 1))
+            {
+                throw new ArgumentException("Argument is not a vector.", nameof(vector));
+            }
+
+            if (vector.Width != 1)
+            {
+                vector = vector.Transpose(false);
+            }
+
+            for (var i = 0; i < vector.Height; i++)
+            {
+                this[n, i] = vector[i, 0].Clone();
+            }
+        }
+
+        /// <summary>
         /// The solve linear equation.
         /// </summary>
         /// <param name="vector">
@@ -474,6 +537,36 @@ namespace GaussianElimination
             Func<MyMatrix<T>, MyMatrix<T>, MyMatrix<T>> solvingFunc)
         {
             return solvingFunc(this, vector);
+        }
+
+        /// <summary>
+        /// The squared norm.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="Value"/>.
+        /// </returns>
+        /// <exception cref="Exception">
+        /// </exception>
+        public Value<T> SquaredNorm()
+        {
+            var vector = this;
+            Value<T> result = new T();
+            if (vector.Width != 1 || vector.Height != 1)
+            {
+                throw new Exception("Squared norm works only for vectors");
+            }
+
+            if (vector.Width != 1)
+            {
+                vector = vector.Transpose();
+            }
+
+            for (var i = 0; i < vector.Height; i++)
+            {
+                result += vector[i, 0] * vector[i, 0];
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -562,75 +655,48 @@ namespace GaussianElimination
         }
 
         /// <summary>
-        /// Get nth row of matrix
+        /// The add.
         /// </summary>
-        /// <param name="n">
-        /// The n.
-        /// </param>
-        /// <param name="copy">
-        /// The copy.
+        /// <param name="second">
+        /// The second.
         /// </param>
         /// <returns>
         /// The <see cref="MyMatrix"/>.
         /// </returns>
-        public MyMatrix<T> GetRow(int n, bool copy = true)
+        protected virtual MyMatrix<T> Add(MyMatrix<T> second)
         {
-            MyMatrix<T> vector = new MyMatrix<T>(1, this.Width);
-            for (int i = 0; i < this.Width; i++)
+            var result = new MyMatrix<T>(this.Width, this.Height);
+            for (int i = 0; i < this.Height; i++)
             {
-                vector[i, 0] = copy ? this[n, i].Clone() : this[n, i];
+                for (int j = 0; j < this.Width; j++)
+                {
+                    result[i, j] = this[i, j] + second[i, j];
+                }
             }
 
-            return vector;
-            //TODO: In future?:
-            //szer*n+i
-            //Column
-            //szer*i+n
+            return result;
         }
 
         /// <summary>
-        /// Get nth column of matrix.
+        /// The multiply by scalar.
         /// </summary>
-        /// <param name="n">
-        /// The n.
-        /// </param>
-        /// <param name="copy">
-        /// The copy.
+        /// <param name="scalar">
+        /// The scalar.
         /// </param>
         /// <returns>
         /// The <see cref="MyMatrix"/>.
         /// </returns>
-        public MyMatrix<T> GetColumn(int n, bool copy = true)
+        protected virtual MyMatrix<T> MultiplyByScalar(Value<T> scalar)
         {
-            MyMatrix<T> vector = new MyMatrix<T>(1, this.Height);
+            var result = new MyMatrix<T>(this.Width, this.Height);
             for (int i = 0; i < this.Height; i++)
             {
-                vector[i, 0] = copy ? this[i, n].Clone() : this[i, n];
+                for (int j = 0; j < this.Width; j++)
+                {
+                    result[i, j] = this[i, j] * scalar;
+                }
             }
 
-            return vector;
-        }
-
-
-        public Value<T> SquaredNorm()
-        {
-            var vector = this;
-            Value<T> result = new T();
-            if (vector.Width != 1 || vector.Height != 1)
-            {
-                throw new Exception("Squared norm works only for vectors");
-            }
-
-            if (vector.Width != 1)
-            {
-                vector = vector.Transpose();
-            }
-
-            for (var i = 0; i < vector.Height; i++)
-            {
-                result += vector[i, 0] * vector[i, 0];
-            }
-            
             return result;
         }
     }
