@@ -146,7 +146,7 @@ namespace GaussianElimination
             for (int i = 0; i < vector.Height; i++)
             {
 #if DEBUG
-                Console.WriteLine($"Partial GAUSS: ROW:{i}/{vector.Height}");
+                //Console.WriteLine($"Partial GAUSS: ROW:{i}/{vector.Height}");
 #endif
                 int rowToSwap = i;
                 for (int j = i + 1; j < vector.Height; j++)

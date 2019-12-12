@@ -551,7 +551,7 @@ namespace GaussianElimination
         {
             var vector = this;
             Value<T> result = new T();
-            if (vector.Width != 1 || vector.Height != 1)
+            if (vector.Width != 1 && vector.Height != 1)
             {
                 throw new Exception("Squared norm works only for vectors");
             }

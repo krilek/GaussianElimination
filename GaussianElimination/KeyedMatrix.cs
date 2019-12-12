@@ -127,7 +127,7 @@ namespace GaussianElimination
             return a.Add(b);
         }
 
-        protected KeyedMatrix<TRowKey, TColKey, TVal> Add(MyMatrix<TVal> keyedMatrix)
+        protected new KeyedMatrix<TRowKey, TColKey, TVal> Add(MyMatrix<TVal> keyedMatrix)
         {
             MyMatrix<TVal> addedMatrices = base.Add(keyedMatrix);
             return new KeyedMatrix<TRowKey, TColKey, TVal>(this.RowsKeys, this.ColumnsKeys, addedMatrices);
