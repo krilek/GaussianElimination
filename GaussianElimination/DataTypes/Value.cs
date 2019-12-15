@@ -14,13 +14,15 @@
 
 namespace GaussianElimination.DataTypes
 {
+    using System;
+
     /// <summary>
     /// The value container.
     /// </summary>
     /// <typeparam name="T">
     /// Implementations of Value
     /// </typeparam>
-    public abstract class Value<T>
+    public abstract class Value<T> : IComparable<Value<T>>
         where T : Value<T>, new()
     {
         /// <summary>
@@ -301,5 +303,10 @@ namespace GaussianElimination.DataTypes
         /// The <see cref="Value"/>.
         /// </returns>
         protected abstract Value<T> Subtract(Value<T> v2);
+
+        public int CompareTo(Value<T> other)
+        {
+            return this.Compare(other);
+        }
     }
 }

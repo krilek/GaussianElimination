@@ -172,6 +172,62 @@ namespace GaussianElimination
         }
 
         /// <summary>
+        /// The get random matrix.
+        /// </summary>
+        /// <param name="width">
+        /// The width.
+        /// </param>
+        /// <param name="height">
+        /// The height.
+        /// </param>
+        /// <param name="minNominator">
+        /// The min nominator.
+        /// </param>
+        /// <param name="maxNominator">
+        /// The max nominator.
+        /// </param>
+        /// <param name="minDenominator">
+        /// The min denominator.
+        /// </param>
+        /// <param name="maxDenominator">
+        /// The max denominator.
+        /// </param>
+        /// <param name="seed">
+        /// The seed.
+        /// </param>
+        /// <returns>
+        /// The <see cref="MyMatrix"/>.
+        /// </returns>
+        public static MyMatrix<T> GetRandomMatrix(
+            int width,
+            int height,
+            int minNominator,
+            int maxNominator,
+            int minDenominator,
+            int maxDenominator,
+            int? seed = null)
+        {
+            if (seed == null)
+            {
+                seed = Guid.NewGuid().GetHashCode();
+            }
+
+            var rnd = new Random(seed.Value);
+            var matrix = new MyMatrix<T>(width, height);
+            for (var i = 0; i < matrix.Height; i++)
+            {
+                for (var j = 0; j < matrix.Width; j++)
+                {
+                    matrix.Matrix[i, j] = new T().SetValue(
+                        rnd.Next(minNominator, maxNominator),
+                        rnd.Next(minDenominator, maxDenominator));
+                }
+            }
+
+            return matrix;
+        }
+
+        /// <summary>
         /// Create random matrix.
         /// </summary>
         /// <param name="width">
@@ -188,34 +244,20 @@ namespace GaussianElimination
         /// </returns>
         public static MyMatrix<T> GetRandomMatrix(int width, int height, int? seed = null)
         {
-            if (seed == null)
-            {
-                seed = Guid.NewGuid().GetHashCode();
-            }
-
-            const int Min = -1 << 16;
-            const int Max = (1 << 16) - 1;
-            var rnd = new Random(seed.Value);
-            var matrix = new MyMatrix<T>(width, height);
-            for (var i = 0; i < matrix.Height; i++)
-            {
-                for (var j = 0; j < matrix.Width; j++)
-                {
-                    matrix.Matrix[i, j] = new T().SetValue(rnd.Next(Min, Max), 1 << 16);
-                }
-            }
-
-            return matrix;
+            const int MinNom = -1 << 16;
+            const int MaxNom = (1 << 16) - 1;
+            const int Denominator = 1 << 16;
+            return GetRandomMatrix(width, height, MinNom, MaxNom, Denominator, Denominator, seed);
         }
 
         /// <summary>
-        /// The +.
+        ///     The +.
         /// </summary>
         /// <param name="a">
-        /// The a.
+        ///     The a.
         /// </param>
         /// <param name="b">
-        /// The b.
+        ///     The b.
         /// </param>
         /// <returns>
         /// </returns>
@@ -540,10 +582,10 @@ namespace GaussianElimination
         }
 
         /// <summary>
-        /// The squared norm.
+        ///     The squared norm.
         /// </summary>
         /// <returns>
-        /// The <see cref="Value"/>.
+        ///     The <see cref="Value" />.
         /// </returns>
         /// <exception cref="Exception">
         /// </exception>
