@@ -212,15 +212,13 @@ namespace GaussianElimination
                 seed = Guid.NewGuid().GetHashCode();
             }
 
-            var rnd = new Random(seed.Value);
+            var rnd = new Random(); //TODO: seed didn't worked
             var matrix = new MyMatrix<T>(width, height);
             for (var i = 0; i < matrix.Height; i++)
             {
                 for (var j = 0; j < matrix.Width; j++)
                 {
-                    matrix.Matrix[i, j] = new T().SetValue(
-                        rnd.Next(minNominator, maxNominator),
-                        rnd.Next(minDenominator, maxDenominator));
+                    matrix.Matrix[i, j] = new T().SetValue(rnd.NextDouble());
                 }
             }
 

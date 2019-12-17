@@ -156,7 +156,7 @@ namespace GaussianElimination
         /// <returns>
         /// The <see cref="KeyedMatrix"/>.
         /// </returns>
-        public static KeyedMatrix<TRowKey, TColKey, TVal> GetRandomNormalized(
+        public static KeyedMatrix<TRowKey, TColKey, TVal> GetRandomControlled(
             List<TRowKey> heightKeys,
             List<TColKey> widthKeys,
             int minNominator,
@@ -196,7 +196,7 @@ namespace GaussianElimination
         /// </returns>
         /// <exception cref="ArgumentException">
         /// </exception>
-        public static KeyedMatrix<TRowKey, TColKey, TVal> GetRandomNormalized(
+        public static KeyedMatrix<TRowKey, TColKey, TVal> GetRandomControlled(
             List<TRowKey> heightKeys,
             List<TColKey> widthKeys,
             NormalizedMethod method,
