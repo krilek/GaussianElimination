@@ -46,7 +46,7 @@ namespace GaussianElimination.DataTypes
         /// <summary>
         ///     Gets the value.
         /// </summary>
-        private double Value { get; }
+        public double Value { get; }
 
         /// <summary>
         ///     The clone.
